@@ -1,18 +1,14 @@
 typedef struct controle CTRL;
 
 struct controle {
-    int PCEsc;
-    int IouD;
-    int EscMem;
-    int IREsc;
-    int MemParaReg;
-    int EscReg;
-    int ULAFonteA;
-    int ULAFonteB;
-    int ULAControle;
-    int PCFonte;
-    int RegDst;
+    int regDest;
+    int srcB;
+    int memReg;
+    int ulaOP;
+    int memWrite;
+    int regWrite;
     int branch;
+    int jump;
 };
 
 
