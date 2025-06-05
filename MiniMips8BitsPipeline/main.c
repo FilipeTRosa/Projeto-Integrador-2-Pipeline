@@ -4,6 +4,7 @@
 #include "step.h"
 #include "multiplexadores.h"
 #include "decodificador.h"
+#include "memoriaDados.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
