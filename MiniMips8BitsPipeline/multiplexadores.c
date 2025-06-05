@@ -3,6 +3,7 @@
 #include "minimips.h"
 #include "step.h"
 #include "multiplexadores.h"
+#include "memoriaDados.h"
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
