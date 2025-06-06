@@ -1,8 +1,10 @@
 #include "memoria.h"
-#include "controle.h"
-#include "multiplexadores.h"
 #include "minimips.h"
+#include "controle.h"
+#include "step.h"
+#include "multiplexadores.h"
 #include "decodificador.h"
+#include "memoriaDados.h"
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
@@ -54,8 +56,6 @@ RegMEMER* criaRegMEMER(){
     
     return new_reg;
 }
-
-
 
 struct instrucao criaIR(){
     struct instrucao inst;

@@ -1,6 +1,10 @@
 {
     "files.associations": {
         "multiplexadores.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "decodificador.h": "c",
+        "minimips.h": "c",
+        "memoria.h": "c",
+        "controle.h": "c"
     }
 }
