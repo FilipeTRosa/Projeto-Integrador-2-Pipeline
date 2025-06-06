@@ -90,35 +90,35 @@ struct instrucao buscaInstrucao(struct memoria_instrucao * memoria, int pc){
     return memoria->mem_inst[pc];
 }
 
-void carregarDados(const char *nomeArquivo, struct memoria_dados *memDados){
-    FILE *arquivo = fopen(nomeArquivo, "r");
-    if (arquivo == NULL) {
-        printf("Erro ao abrir o arquivo %s.\n", nomeArquivo);
-        return;
-    }
+// void carregarDados(const char *nomeArquivo, struct memoria_dados *memDados){
+//     FILE *arquivo = fopen(nomeArquivo, "r");
+//     if (arquivo == NULL) {
+//         printf("Erro ao abrir o arquivo %s.\n", nomeArquivo);
+//         return;
+//     }
 
-    char linha[32];
-    int posicao = 0;
+//     char linha[32];
+//     int posicao = 0;
 
-    // Inicializa a memória com um valor padrão (0 para indicar "vazio")
-    for (int i = 0; i < memDados->tamanho; i++) {
-        memDados->mem_dados[i].dado = 0;
-        strcpy(memDados->mem_dados[i].dado_char, "vazio");
-    }
+//     // Inicializa a memória com um valor padrão (0 para indicar "vazio")
+//     for (int i = 0; i < memDados->tamanho; i++) {
+//         memDados->mem_dados[i].dado = 0;
+//         strcpy(memDados->mem_dados[i].dado_char, "vazio");
+//     }
 
-    while (posicao < memDados->tamanho && fgets(linha, sizeof(linha), arquivo) != NULL) {
-        // Remove quebras de linha e espaços extras
-        linha[strcspn(linha, "\r\n")] = '\0';
+//     while (posicao < memDados->tamanho && fgets(linha, sizeof(linha), arquivo) != NULL) {
+//         // Remove quebras de linha e espaços extras
+//         linha[strcspn(linha, "\r\n")] = '\0';
 
-        if (strlen(linha) > 0) {  // Se a linha não estiver vazia
-            memDados->mem_dados[posicao].dado = atoi(linha);
-            snprintf(memDados->mem_dados[posicao].dado_char, sizeof(memDados->mem_dados[posicao].dado_char), "%d", memDados->mem_dados[posicao].dado);
-        }
-        posicao++;
-    }
+//         if (strlen(linha) > 0) {  // Se a linha não estiver vazia
+//             memDados->mem_dados[posicao].dado = atoi(linha);
+//             snprintf(memDados->mem_dados[posicao].dado_char, sizeof(memDados->mem_dados[posicao].dado_char), "%d", memDados->mem_dados[posicao].dado);
+//         }
+//         posicao++;
+//     }
 
-    fclose(arquivo);
-}
+//     fclose(arquivo);
+// }
 
 BRegs* alocaBancoRegistradores() {
 
@@ -186,19 +186,19 @@ void imprimeBanco(BRegs* bancoRegs) {
 
 
 
-void imprimeDado(struct dado dado){
-    printf("Valor: [%d]\n", dado.dado);
-}
+// void imprimeDado(struct dado dado){
+//     printf("Valor: [%d]\n", dado.dado);
+// }
 
-void imprimeMemDados(struct memoria_dados *mem){
-    printf("==== Memoria de dados ====\n");
-    for (int i = 0; i < mem->tamanho; i++)
-    {
-        printf("Posicao: [%d], ", i);
-        imprimeDado(mem->mem_dados[i]);
-    }
-    printf("==========================\n");
-}
+// void imprimeMemDados(struct memoria_dados *mem){
+//     printf("==== Memoria de dados ====\n");
+//     for (int i = 0; i < mem->tamanho; i++)
+//     {
+//         printf("Posicao: [%d], ", i);
+//         imprimeDado(mem->mem_dados[i]);
+//     }
+//     printf("==========================\n");
+// }
 
 int* buscaBancoRegs(BRegs* bancoRegs, int rs, int rt, int rd) {
     
@@ -492,16 +492,16 @@ nodoPilha* criaNodo(int pc, BRegs* bancoRegs, memDados* memoriaDados) {
     return new_nodo;
 }
 
-struct memoria_dados* copiaMemoriaDados(struct memoria_dados* memoriaDados) {
-    struct memoria_dados *newMemoria = (struct memoria_dados *)malloc(sizeof(struct memoria_dados));
-    newMemoria->mem_dados = (struct dado *)malloc(memoriaDados->tamanho * sizeof(struct dado));
+// struct memoria_dados* copiaMemoriaDados(struct memoria_dados* memoriaDados) {
+//     struct memoria_dados *newMemoria = (struct memoria_dados *)malloc(sizeof(struct memoria_dados));
+//     newMemoria->mem_dados = (struct dado *)malloc(memoriaDados->tamanho * sizeof(struct dado));
 
-    for(int i = 0; i < memoriaDados->tamanho; i++) {
-        newMemoria->mem_dados[i] = memoriaDados->mem_dados[i];
-    }
+//     for(int i = 0; i < memoriaDados->tamanho; i++) {
+//         newMemoria->mem_dados[i] = memoriaDados->mem_dados[i];
+//     }
 
-    return newMemoria;
-}
+//     return newMemoria;
+// }
 
 BRegs* copiaBancoRegistradores(BRegs* bancoRegs) {
     

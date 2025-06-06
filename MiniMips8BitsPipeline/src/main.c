@@ -44,7 +44,7 @@ int main(int argc, char const *argv[])
     int RegA = 0;
     int RegB = 0;
     RegINST *regIR = criaRegIR();
-    RegMDR *regMDR = criaRegMDR();
+    //RegMDR *regMDR = criaRegMDR();
     ULAsaida *regSaidaULA = criaRegSaidaULA();
 
     //Configuracao de variaveis do sistema
@@ -143,7 +143,7 @@ int main(int argc, char const *argv[])
                 printf("Digite o nome do arquivo para salvar.\n");
                 setbuf(stdin, NULL);
                 scanf("%[^\n]s", arquivoMemDados);
-                salvarMemoriaEmArquivo(arquivoMemDados, &mem);
+                //salvarMemoriaEmArquivo(arquivoMemDados, &mem);
                 
                 break;
             case 8:
@@ -153,7 +153,7 @@ int main(int argc, char const *argv[])
 
                 while (parada)
                 {
-                    step(&parada, &pc, &mem, bancoRegistradores, controle, pilha, stat, &estadoControle, &regSaidaULA->resultULA, regMDR, &RegA, &RegB, regIR);
+                    //step(&parada, &pc, &mem, bancoRegistradores, controle, pilha, stat, &estadoControle, &regSaidaULA->resultULA, regMDR, &RegA, &RegB, regIR);
                 }
                 fflush(stdout);
                 fclose(log);
@@ -162,7 +162,7 @@ int main(int argc, char const *argv[])
                 break; }
             case 9:
 
-                    step(&parada, &pc, &mem, bancoRegistradores, controle, pilha, stat, &estadoControle, &regSaidaULA->resultULA, regMDR, &RegA, &RegB, regIR);
+                    //step(&parada, &pc, &mem, bancoRegistradores, controle, pilha, stat, &estadoControle, &regSaidaULA->resultULA, regMDR, &RegA, &RegB, regIR);
        
                 break;
             case 10:
