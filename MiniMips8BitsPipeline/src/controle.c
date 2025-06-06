@@ -12,7 +12,7 @@
 
 
 CTRL* criaControle() {
-    CTRL *new_controle;
+    CTRL *new_controle = (CTRL *)malloc(sizeof(CTRL));
     new_controle->regDest = 0;
     new_controle->srcB = 0;
     new_controle->memReg = 0;

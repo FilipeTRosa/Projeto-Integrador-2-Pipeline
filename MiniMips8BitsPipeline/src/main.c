@@ -90,7 +90,7 @@ int main(int argc, char const *argv[])
     do {
         printf("\n===== MENU =====\n");
         printf("1 - Carregar memoria de instrucoes (.mem)\n");
-        printf("2 - Carregar memoria de Dados (.dat) OBSOLETO\n");
+        printf("2 - Carregar memoria de Dados (.dat)\n");
         printf("3 - Imprimir memorias (instrucoes e dados)\n");
         printf("4 - Imprimir banco de registradores\n");
         printf("5 - Imprimir todo o simulador (registradores e memorias)\n");
@@ -113,11 +113,16 @@ int main(int argc, char const *argv[])
                 break;
             case 2:
                 //era a mem de dados
+                printf("Digite o nome do arquivo de memoria.\n");
+                setbuf(stdin, NULL);
+                scanf("%[^\n]s", arquivoMemDados);
+                carregarDados(arquivoMemDados, &memDados); 
                 break;
             case 3:
                 //imprime memorias
                 system("clear");
                 imprimeMemInstrucoes(&mem);
+                imprimeMemDados(&memDados);
                 break;
             case 4:
                 system("clear");
@@ -154,6 +159,7 @@ int main(int argc, char const *argv[])
                 while (parada)
                 {
                     //step(&parada, &pc, &mem, bancoRegistradores, controle, pilha, stat, &estadoControle, &regSaidaULA->resultULA, regMDR, &RegA, &RegB, regIR);
+                    step(&parada, &pc, &memDados, &mem, bancoRegistradores, controle, pilha, stat);
                 }
                 fflush(stdout);
                 fclose(log);
@@ -163,6 +169,7 @@ int main(int argc, char const *argv[])
             case 9:
 
                     //step(&parada, &pc, &mem, bancoRegistradores, controle, pilha, stat, &estadoControle, &regSaidaULA->resultULA, regMDR, &RegA, &RegB, regIR);
+                    step(&parada, &pc, &memDados, &mem, bancoRegistradores, controle, pilha, stat);
        
                 break;
             case 10:

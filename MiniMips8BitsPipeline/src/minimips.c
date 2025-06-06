@@ -200,10 +200,14 @@ void imprimeBanco(BRegs* bancoRegs) {
 //     printf("==========================\n");
 // }
 
-int* buscaBancoRegs(BRegs* bancoRegs, int rs, int rt, int rd) {
+int* buscaBancoRegs(BRegs* bancoRegs, int rs, int rt, int rd, int defDest) {
     
     regs *aux = bancoRegs->registradores;
     int* vetBusca = (int *)malloc(3 * sizeof(int));
+
+    if(defDest == 0) {
+        rd = rt;
+    }
 
     while(aux != NULL & aux->id != rs) {
         aux = aux->prox;
