@@ -1,3 +1,4 @@
+#include "memoriaDados.h"
 #include "memoria.h"
 #include "minimips.h"
 #include "controle.h"
@@ -18,6 +19,7 @@ void carregarDados(const char *nomeArquivo, struct memoria_dados *memDados){
         printf("Erro ao abrir o arquivo %s.\n", nomeArquivo);
         return;
     }
+}
 
 void insereMemDados(struct memoria_dados *mem, int endereco, int valor, int sinalControle){
     if (sinalControle == 1)
@@ -55,4 +57,18 @@ struct memoria_dados* copiaMemoriaDados(struct memoria_dados* memoriaDados) {
     }
 
     return newMemoria;
+}
+
+void salvarMemoriaEmArquivo(const char *nomeArquivo, struct memoria_dados *memDados) {
+    FILE *arquivo = fopen(nomeArquivo, "w"); // "w" cria ou sobrescreve
+    if (arquivo == NULL) {
+        perror("Erro ao abrir o arquivo para escrita");
+        return;
+    }
+
+    for (int i = 0; i < memDados->tamanho; i++) {
+        fprintf(arquivo, "%d\n", memDados->mem_dados[i].dado);
+    }
+
+    fclose(arquivo);
 }

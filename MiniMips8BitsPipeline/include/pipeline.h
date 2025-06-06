@@ -2,6 +2,7 @@ typedef struct Registrador_BIDI RegBIDI;
 typedef struct Registrador_DIEX RegDIEX;
 typedef struct Registrador_EXMEM RegEXMEM;
 typedef struct Registrador_MEMER RegMEMER;
+typedef struct RegistradoresALL RegALL;
 
 struct Registrador_BIDI {
     struct instrucao IR;
@@ -11,7 +12,7 @@ struct Registrador_BIDI {
 
 struct Registrador_DIEX {
     //ADICIONAR ASSEMBLY
-    CTRL controle_DIEX; //arrumar questao do ponteiro   
+    CTRL *controle_DIEX; //arrumar questao do ponteiro   
     int RegA;
     int RegB;
     int imm;
@@ -22,7 +23,7 @@ struct Registrador_DIEX {
 
 struct Registrador_EXMEM{
     //assembly
-    struct controle_EXEMEM;
+    CTRL *controle_EXEMEM;
     int resultULA;
     int RegB;
     int rd;
@@ -31,12 +32,21 @@ struct Registrador_EXMEM{
 
 struct Registrador_MEMER{
     //assembly
-    struct controle_MEMER;
+    CTRL *controle_MEMER;
     int resultULA;
     int dado;
     int rd;
 };
 
+struct RegistradoresALL {
+    RegBIDI *reg_bidi;
+    RegDIEX *reg_diex;
+    RegEXMEM *reg_exmem;
+    RegMEMER *reg_memer;
+};
+
+
+RegALL* criaRegAll();
 RegBIDI* criaRegBIDI();
 RegDIEX* criaRegDIEX();
 RegEXMEM* criaRegEXMEM();

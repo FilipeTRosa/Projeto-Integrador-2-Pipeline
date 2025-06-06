@@ -38,7 +38,7 @@ RegDIEX* criaRegDIEX(){
 RegEXMEM* criaRegEXMEM(){
     RegEXMEM* new_reg = (RegEXMEM*)malloc(sizeof(RegEXMEM));
 
-    new_reg->controle_EXMEM = criaControle();
+    new_reg->controle_EXEMEM = criaControle();
     new_reg->resultULA = 0;
     new_reg->RegB = 0;
     new_reg->rd = 0;
@@ -71,4 +71,19 @@ struct instrucao criaIR(){
     inst.imm = 0;
     inst.addr = 0;
     return inst;
+}
+
+RegALL* criaRegAll(){
+    RegALL* new_reg = (RegALL*)malloc(sizeof(RegALL));
+    // RegMEMER* new_memer = criaRegMEMER();
+    // RegEXMEM* new_exmem = criaRegEXMEM();
+    // RegDIEX* new_diex = criaRegDIEX();
+    // RegBIDI* new_bidi = criaRegBIDI();
+
+    new_reg->reg_bidi = criaRegBIDI();
+    new_reg->reg_diex = criaRegDIEX();
+    new_reg->reg_exmem = criaRegEXMEM(); 
+    new_reg->reg_memer = criaRegMEMER(); 
+
+    return new_reg;
 }

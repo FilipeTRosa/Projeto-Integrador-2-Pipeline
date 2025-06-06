@@ -5,13 +5,7 @@ enum classe_inst{
     tipo_R, tipo_I, tipo_J, tipo_OUTROS
     };
 
-enum tipo_mem{
-    tipo_instrucao, tipo_dado
-};
-
 struct instrucao{
-    enum tipo_mem tipo_mem;
-    int instCount;
     enum classe_inst tipo_inst;
     char inst_char[17];
     char assembly[50];
@@ -22,7 +16,6 @@ struct instrucao{
     int funct;
     int imm;
     int addr;
-    int dado;
 };
     
 struct memoria_instrucao{
@@ -30,9 +23,9 @@ struct memoria_instrucao{
     int tamanho;
 };
 
-struct RegistradorDados {
-    int dado;  
-};
+// struct RegistradorDados {
+//     int dado;  
+// };
 
 
 struct RegistradorInstrucao {
@@ -42,14 +35,14 @@ struct RegistradorInstrucao {
 void atualizaIR(RegINST *ir, struct instrucao nova_inst, int sinalControle);
 void atualizaMDR(RegMDR *regMDR, int new_dado);
 RegINST* criaRegIR();
-RegMDR* criaRegMDR();
+//RegMDR* criaRegMDR();
 
 void carregarInstrucoes(const char *nomeArquivo, struct memoria_instrucao *mem);
 void imprimeMemInstrucoes(struct memoria_instrucao *mem);
 void imprimeInstrucao(struct instrucao inst);
 void salvarAsm(const char *nomeArquivo, struct memoria_instrucao *memInst);
 const char* imprimeTipo(enum classe_inst tipo);
-void salvarMemoriaEmArquivo(const char *nomeArquivo, struct memoria_instrucao *mem);
+//void salvarMemoriaEmArquivo(const char *nomeArquivo, struct memoria_instrucao *mem);
 
 // ------------------- DADOS ------------------------
 
