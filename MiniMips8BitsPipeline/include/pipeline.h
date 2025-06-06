@@ -36,3 +36,9 @@ struct Registrador_MEMER{
     int dado;
     int rd;
 };
+
+RegBIDI* criaRegBIDI();
+RegDIEX* criaRegDIEX();
+RegEXMEM* criaRegEXMEM();
+RegMEMER* criaRegMEMER();
+struct instrucao criaIR();

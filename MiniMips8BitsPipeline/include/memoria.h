@@ -53,5 +53,5 @@ void salvarMemoriaEmArquivo(const char *nomeArquivo, struct memoria_instrucao *m
 
 // ------------------- DADOS ------------------------
 
-void insereDadosMem(struct memoria_instrucao *mem, int endereco, int valor, int sinalControle);
-int getDado(struct memoria_instrucao *mem, int endereco);
+// void insereDadosMem(struct memoria_instrucao *mem, int endereco, int valor, int sinalControle);
+// int getDado(struct memoria_instrucao *mem, int endereco);

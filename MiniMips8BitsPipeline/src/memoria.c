@@ -1,9 +1,9 @@
-#include "controle.h"
 #include "memoria.h"
-#include "decodificador.h"
-#include "multiplexadores.h"
 #include "minimips.h"
+#include "controle.h"
 #include "step.h"
+#include "multiplexadores.h"
+#include "decodificador.h"
 #include "memoriaDados.h"
 #include <string.h>
 #include <stdlib.h>
@@ -165,24 +165,24 @@ RegMDR* criaRegMDR() {
 }
 
 
-void insereDadosMem(struct memoria_instrucao *mem, int endereco, int valor, int sinalControle){
-    int desvidoMemoriaInst = 128;
-    if (sinalControle == 1)
-    {   
-        char palavra[17] = "00000000";
-        char sufixo[9] = "00000000";
-        converteDecimalParaBinario(sufixo, valor);
-        strcat(palavra, sufixo);
-        strcpy(mem->mem_inst[desvidoMemoriaInst + endereco].inst_char, palavra);
-        mem->mem_inst[desvidoMemoriaInst + endereco].dado = valor;
-    }
-}
+// void insereDadosMem(struct memoria_instrucao *mem, int endereco, int valor, int sinalControle){
+//     int desvidoMemoriaInst = 128;
+//     if (sinalControle == 1)
+//     {   
+//         char palavra[17] = "00000000";
+//         char sufixo[9] = "00000000";
+//         converteDecimalParaBinario(sufixo, valor);
+//         strcat(palavra, sufixo);
+//         strcpy(mem->mem_inst[desvidoMemoriaInst + endereco].inst_char, palavra);
+//         mem->mem_inst[desvidoMemoriaInst + endereco].dado = valor;
+//     }
+// }
 
-int getDado(struct memoria_instrucao *mem, int endereco){
-    int desvidoMemoriaInst = 128;
-    int valor = mem->mem_inst[desvidoMemoriaInst + endereco].dado;
-    return valor;
-}
+// int getDado(struct memoria_instrucao *mem, int endereco){
+//     int desvidoMemoriaInst = 128;
+//     int valor = mem->mem_inst[desvidoMemoriaInst + endereco].dado;
+//     return valor;
+// }
 
 void salvarMemoriaEmArquivo(const char *nomeArquivo, struct memoria_instrucao *mem) {
     FILE *arquivo = fopen(nomeArquivo, "w"); // "w" cria ou sobrescreve

@@ -46,15 +46,15 @@ struct memoria_instrucao{
     };
 */
 
-struct dado{
-    char dado_char[8];
-    int dado;
-};
+// struct dado{
+//     char dado_char[8];
+//     int dado;
+// };
 
-struct memoria_dados{
-struct dado *mem_dados;
-int tamanho;
-    };
+// struct memoria_dados{
+// struct dado *mem_dados;
+// int tamanho;
+//     };
 
 struct bancoRegistradores
 {
@@ -96,7 +96,7 @@ descPilha* criarPilha();
 void inserePilha(descPilha* pilha, nodoPilha* nodo);
 nodoPilha* removePilha(descPilha* pilha);
 nodoPilha* criaNodo(int pc, BRegs* bancoRegs, memDados* memoriaDados);
-struct memoria_dados* copiaMemoriaDados(struct memoria_dados* memoriaDados);
+// struct memoria_dados* copiaMemoriaDados(struct memoria_dados* memoriaDados);
 BRegs* copiaBancoRegistradores(BRegs* bancoRegs);
 void printStack(descPilha * pilha);
 
@@ -112,9 +112,9 @@ void salvaDadoReg(BRegs* bancoRegistradores, int resultadoULA, int vetBuscaReg, 
 
 
 // ================== MEMORIA DE DADOS  ============================= //
-void carregarDados(const char *nomeArquivo, struct memoria_dados *memDados);
-void imprimeDado(struct dado dado);
-void imprimeMemDados(struct memoria_dados *mem);
+// void carregarDados(const char *nomeArquivo, struct memoria_dados *memDados);
+// void imprimeDado(struct dado dado);
+// void imprimeMemDados(struct memoria_dados *mem);
 //void insereMemDados(struct memoria_dados *mem, int endereco, int valor, int sinalControle);
 //int getDado(struct memoria_dados *mem, int endereco);
 //void salvarMemoriaEmArquivo(const char *nomeArquivo, struct memoria_dados *memDados);
