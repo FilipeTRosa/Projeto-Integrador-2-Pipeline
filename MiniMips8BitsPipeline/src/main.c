@@ -1,14 +1,16 @@
 #include "memoria.h"
+#include "memoriaDados.h"
 #include "minimips.h"
 #include "controle.h"
-#include "step.h"
+#include "pipeline.h"
 #include "multiplexadores.h"
 #include "decodificador.h"
-#include "memoriaDados.h"
+#include "step.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+
 
 int main(int argc, char const *argv[])
 {
@@ -25,6 +27,12 @@ int main(int argc, char const *argv[])
     memDados.tamanho = 256;
     char arquivoMemDados[50];
     //Fim alocação de memoria de dados
+
+    // pipeline
+    RegALL *RegIN = criaRegAll();
+    RegALL *RegOUT = criaRegAll();
+    
+
 
     //
     struct estatistica *stat = NULL;
@@ -43,7 +51,7 @@ int main(int argc, char const *argv[])
     // REGISTRADORES TEMPORAIS //
     int RegA = 0;
     int RegB = 0;
-    RegINST *regIR = criaRegIR();
+    //RegINST *regIR = criaRegIR();
     //RegMDR *regMDR = criaRegMDR();
     ULAsaida *regSaidaULA = criaRegSaidaULA();
 
@@ -159,7 +167,7 @@ int main(int argc, char const *argv[])
                 while (parada)
                 {
                     //step(&parada, &pc, &mem, bancoRegistradores, controle, pilha, stat, &estadoControle, &regSaidaULA->resultULA, regMDR, &RegA, &RegB, regIR);
-                    step(&parada, &pc, &memDados, &mem, bancoRegistradores, controle, pilha, stat);
+                    //step(&parada, &pc, &memDados, &mem, bancoRegistradores, controle, pilha, stat);
                 }
                 fflush(stdout);
                 fclose(log);
@@ -169,8 +177,12 @@ int main(int argc, char const *argv[])
             case 9:
 
                     //step(&parada, &pc, &mem, bancoRegistradores, controle, pilha, stat, &estadoControle, &regSaidaULA->resultULA, regMDR, &RegA, &RegB, regIR);
-                    step(&parada, &pc, &memDados, &mem, bancoRegistradores, controle, pilha, stat);
-       
+                    // step(&parada, &pc, &memDados, &mem, bancoRegistradores, controle, pilha, stat
+                    step(&pc, &parada, RegIN, RegOUT, bancoRegistradores, &mem, &memDados);
+                    
+                    RegIN = RegOUT;
+
+
                 break;
             case 10:
                 printf("\nBACK\n");

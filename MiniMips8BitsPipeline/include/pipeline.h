@@ -39,10 +39,10 @@ struct Registrador_MEMER{
 };
 
 struct RegistradoresALL {
-    RegBIDI *reg_bidi;
-    RegDIEX *reg_diex;
-    RegEXMEM *reg_exmem;
-    RegMEMER *reg_memer;
+    RegBIDI *BIDI;
+    RegDIEX *DIEX;
+    RegEXMEM *EXMEM;
+    RegMEMER *MEMER;
 };
 
 

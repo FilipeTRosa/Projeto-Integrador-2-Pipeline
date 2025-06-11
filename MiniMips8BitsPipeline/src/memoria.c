@@ -1,6 +1,7 @@
 #include "memoria.h"
 #include "minimips.h"
 #include "controle.h"
+#include "pipeline.h"
 #include "step.h"
 #include "multiplexadores.h"
 #include "decodificador.h"
