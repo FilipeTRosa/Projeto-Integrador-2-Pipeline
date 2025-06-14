@@ -1,3 +1,4 @@
+
 struct dado{
 char dado_char[8];
 int dado;
