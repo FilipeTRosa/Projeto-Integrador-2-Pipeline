@@ -61,5 +61,10 @@ RegEXMEM* criaRegEXMEM();
 RegMEMER* criaRegMEMER();
 struct instrucao criaIR();
 
+void copiaRegBIDI(RegBIDI *out, RegBIDI *in);
+void copiaRegDIEX(RegDIEX *out, RegDIEX *in);
+void copiaRegEXMEM(RegEXMEM *out, RegEXMEM *in);
+void copiaRegMEMER(RegMEMER *out, RegMEMER *in);
+void copiaRegALL(RegALL *out, RegALL *in);
 
 #endif 
