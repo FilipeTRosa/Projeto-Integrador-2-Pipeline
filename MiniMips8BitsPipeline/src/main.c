@@ -181,8 +181,7 @@ int main(int argc, char const *argv[])
                     // step(&parada, &pc, &memDados, &mem, bancoRegistradores, controle, pilha, stat
                     step(&contClock, &pc, &parada, RegIN, RegOUT, bancoRegistradores, &mem, &memDados);
                     
-                    RegIN = RegOUT;
-
+                    copiaRegALL(RegIN, RegOUT);
 
                 break;
             case 10:

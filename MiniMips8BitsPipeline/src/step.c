@@ -16,7 +16,7 @@
 void estagio_BI(int *pc, RegBIDI *bidi_out, struct memoria_instrucao *memInst) {
     bidi_out->IR = buscaInstrucao(memInst, *pc);
     bidi_out->pc_incrementado = *pc + 1;
-    printf("\n========= ESTAGIO BIDI =========\n");
+    printf("\n========= ESTAGIO BI =========\n");
     printf("Detalhes da Instrução:\n");
     printf("  - Instrução: \t%s\n", bidi_out->IR.assembly);
     printf("  - Campos: \topcode=%-2d | rs=%d | rt=%d | rd=%d | funct=%d | imm=%d | addr=%d\n",
@@ -33,7 +33,7 @@ void estagio_DI(RegBIDI *bidi_in, RegDIEX *diex_out, BRegs *bancoReg, int *parad
     //    *diex_out = *criaRegDIEX(); 
     //    return;
     //}
-    printf("\n========= ESTAGIO DIEX =========");
+    printf("\n========= ESTAGIO DI =========");
 
     setSignal(diex_out->controle_DIEX, bidi_in->IR.opcode, bidi_in->IR.funct);
     imprimeControle(diex_out->controle_DIEX);
@@ -47,7 +47,7 @@ void estagio_DI(RegBIDI *bidi_in, RegDIEX *diex_out, BRegs *bancoReg, int *parad
     printf("rA: [%d] - ", vetor_busca[0]);
     printf("rB: [%d] - \n", vetor_busca[1]);
 
-    strcpy(diex_out->assembly, bidi_in->IR.assembly);
+    strcpy(diex_out->assembly, bidi_in->IR.assembly); //copia inst
     diex_out->RegA = vetor_busca[0];
     diex_out->RegB = vetor_busca[1];
     diex_out->imm = bidi_in->IR.imm;
@@ -61,7 +61,7 @@ void estagio_DI(RegBIDI *bidi_in, RegDIEX *diex_out, BRegs *bancoReg, int *parad
 
 
 void estagio_EX(RegDIEX *diex_in, RegEXMEM *exmem_out) {
-    printf("\n========= ESTAGIO EXMEM =========");
+    printf("\n========= ESTAGIO EX =========");
     imprimeControle(diex_in->controle_DIEX);
     printf("Instrução -> [%s] \n", diex_in->assembly);
 
@@ -97,7 +97,7 @@ void estagio_MEM(RegEXMEM *exmem_in, RegMEMER *memer_out, struct memoria_dados *
 
     if ((exmem_in->controle_EXEMEM->memWrite == 1) && (exmem_in->controle_EXEMEM->memReg == 1)) {
         //addi
-        printf("Entrou no ADDI \n");
+        printf("Entrou no ADDI (SW??) \n");
         insereMemDados(memDados, exmem_in->resultULA[0], exmem_in->RegB, 1);
     } else if ((exmem_in->controle_EXEMEM->regWrite == 1) && (exmem_in->controle_EXEMEM->memReg == 0)) {
         //LW
@@ -116,7 +116,6 @@ void estagio_ER(RegMEMER *memer_in, BRegs *bancoReg) {
     printf("Dado a ser escrito = [%d] \n", memer_in->dado);
 
     if (memer_in->controle_MEMER->regWrite == 1) {
-        //Mux *muxwb = criaMux(memer_in->resultULA[0], memer_in->dado, 0, memer_in->controle_MEMER->memReg); //ASSIM NAO FUNCIONAVA
         Mux *muxwb = criaMux(memer_in->dado, memer_in->resultULA[0], 0, memer_in->controle_MEMER->memReg);
         int dado_final = muxFuncition(muxwb);
         //printf("dado buscado = [%d] \n", dado_final);
@@ -150,3 +149,5 @@ void step(int *contClock, int *pc, int *parada, RegALL *regIN, RegALL *regOUT, B
     }
 
 }
+
+//teste
