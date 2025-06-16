@@ -2,6 +2,7 @@
 #include "minimips.h"
 #include "controle.h"
 #include "step.h"
+#include "pipeline.h"
 #include "multiplexadores.h"
 #include "decodificador.h"
 #include "memoriaDados.h"
@@ -9,7 +10,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdio.h>
-#include <pipeline.h>
+
 
 
 RegBIDI* criaRegBIDI() {
@@ -24,6 +25,7 @@ RegBIDI* criaRegBIDI() {
 RegDIEX* criaRegDIEX(){
     RegDIEX* new_reg = (RegDIEX*)malloc(sizeof(RegDIEX));
 
+    strcpy(new_reg->assembly, "vazio");
     new_reg->controle_DIEX = criaControle();
     new_reg->RegA = 0;
     new_reg->RegB = 0;
@@ -38,6 +40,7 @@ RegDIEX* criaRegDIEX(){
 RegEXMEM* criaRegEXMEM(){
     RegEXMEM* new_reg = (RegEXMEM*)malloc(sizeof(RegEXMEM));
 
+    strcpy(new_reg->assembly, "vazio");
     new_reg->controle_EXEMEM = criaControle();
     new_reg->resultULA = 0;
     new_reg->RegB = 0;
@@ -49,6 +52,7 @@ RegEXMEM* criaRegEXMEM(){
 RegMEMER* criaRegMEMER(){
     RegMEMER* new_reg = (RegMEMER*)malloc(sizeof(RegMEMER));
 
+    strcpy(new_reg->assembly, "vazio");
     new_reg->controle_MEMER = criaControle();
     new_reg->resultULA = 0;
     new_reg->dado = 0;
@@ -80,10 +84,45 @@ RegALL* criaRegAll(){
     // RegDIEX* new_diex = criaRegDIEX();
     // RegBIDI* new_bidi = criaRegBIDI();
 
-    new_reg->reg_bidi = criaRegBIDI();
-    new_reg->reg_diex = criaRegDIEX();
-    new_reg->reg_exmem = criaRegEXMEM(); 
-    new_reg->reg_memer = criaRegMEMER(); 
+    new_reg->BIDI = criaRegBIDI();
+    new_reg->DIEX = criaRegDIEX();
+    new_reg->EXMEM = criaRegEXMEM(); 
+    new_reg->MEMER = criaRegMEMER(); 
 
     return new_reg;
+}
+
+void copiaRegBIDI(RegBIDI *in, RegBIDI *out) {
+    *in = *out;
+}
+
+void copiaRegDIEX(RegDIEX *in, RegDIEX *out) {
+    *(in->controle_DIEX) = *(out->controle_DIEX);
+    in->RegA = out->RegA;
+    in->RegB = out->RegB;
+    in->imm = out->imm;
+    in->rt = out->rt;
+    in->rd = out->rd;
+    in->pc_incrementado = out->pc_incrementado;
+}
+
+void copiaRegEXMEM(RegEXMEM *in, RegEXMEM *out) {
+    *(in->controle_EXEMEM) = *(out->controle_EXEMEM);
+    in->resultULA = out->resultULA;
+    in->RegB = out->RegB;
+    in->rd = out->rd;
+}
+
+void copiaRegMEMER(RegMEMER *in, RegMEMER *out) {
+    *(in->controle_MEMER) = *(out->controle_MEMER);
+    in->resultULA = out->resultULA;
+    in->dado = out->dado;
+    in->rd = out->rd;
+}
+
+void copiaRegALL(RegALL *in, RegALL *out) {
+    copiaRegBIDI(in->BIDI, out->BIDI);
+    copiaRegDIEX(in->DIEX, out->DIEX);
+    copiaRegEXMEM(in->EXMEM, out->EXMEM);
+    copiaRegMEMER(in->MEMER, out->MEMER);
 }

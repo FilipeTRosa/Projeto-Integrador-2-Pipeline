@@ -1,3 +1,4 @@
+#include "pipeline.h"
 #include "memoria.h"
 #include "minimips.h"
 #include "controle.h"
@@ -65,6 +66,7 @@ char* getNomeFunct(int funct) {
         case 4: return "and";
         case 5: return "or";
     }
+    return "erro"; //caso nenhuma opção for satisfeita
 }
 
 char* getNomeOpcode(int opcode) {
@@ -75,6 +77,7 @@ char* getNomeOpcode(int opcode) {
         case 8: return "beq";
         case 2: return "j";
     }
+    return "erro"; //caso nenhuma opção for satisfeita
 }
 
 struct instrucao decodificaInstrucao(struct instrucao inst){
@@ -84,7 +87,7 @@ struct instrucao decodificaInstrucao(struct instrucao inst){
     strcpy(palavra, inst.inst_char);
 
     //Variaveis da instrucao
-    char assembly[50];
+    //char assembly[50];
     char opcode[4];
     char rs[4];
     char rt[4];

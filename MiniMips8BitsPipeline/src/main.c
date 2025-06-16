@@ -31,6 +31,7 @@ int main(int argc, char const *argv[])
     // pipeline
     RegALL *RegIN = criaRegAll();
     RegALL *RegOUT = criaRegAll();
+    int contClock = 0;
     
 
 
@@ -40,37 +41,37 @@ int main(int argc, char const *argv[])
     //
 
     //Variaveis do conversor de bin
-    int dec;
-    int comp2 = 1;
+    //int dec;
+    //int comp2 = 1;
     //Fim conversor
     
     //Variaveis de teste
-    char palavra[17];
+    //char palavra[17];
     //FIm testes
 
     // REGISTRADORES TEMPORAIS //
-    int RegA = 0;
-    int RegB = 0;
+    //int RegA = 0;
+    //int RegB = 0;
     //RegINST *regIR = criaRegIR();
     //RegMDR *regMDR = criaRegMDR();
-    ULAsaida *regSaidaULA = criaRegSaidaULA();
+    //ULAsaida *regSaidaULA = criaRegSaidaULA();
 
     //Configuracao de variaveis do sistema
     int menu = 0;
     int pc = 0;
-    int operando2;
-    int* buscaReg = NULL;
+    //int operando2;
+    //int* buscaReg = NULL;
     char arquivoAsm[50];
     int parada = 1;
-    int estadoControle = 0;
+    //int estadoControle = 0;
     //Fim sistema
 
     descPilha* pilha = criarPilha();
 
     // CRIANDO CONTROLE //
 
-    CTRL *controle = NULL;
-    controle = criaControle();
+    //CTRL *controle = NULL;
+    //controle = criaControle();
 
     // CRIANDO BANCO DE REGISTRADORES //
 
@@ -86,11 +87,11 @@ int main(int argc, char const *argv[])
 
     // TESTANDO BUSCA NO BANCO DE REGISTRADORES //
 
-    int *vetBusca = NULL;
+    //int *vetBusca = NULL;
 
     // TESTANDO A UNIDADE LOGICA ARITMETICA //
 
-    int *resultadoULA = NULL;
+    //int *resultadoULA = NULL;
     //resultadoULA = processamentoULA(vetBusca[0], vetBusca[1], 0);
 
     //Fim config do sistema
@@ -178,10 +179,9 @@ int main(int argc, char const *argv[])
 
                     //step(&parada, &pc, &mem, bancoRegistradores, controle, pilha, stat, &estadoControle, &regSaidaULA->resultULA, regMDR, &RegA, &RegB, regIR);
                     // step(&parada, &pc, &memDados, &mem, bancoRegistradores, controle, pilha, stat
-                    step(&pc, &parada, RegIN, RegOUT, bancoRegistradores, &mem, &memDados);
+                    step(&contClock, &pc, &parada, RegIN, RegOUT, bancoRegistradores, &mem, &memDados);
                     
-                    RegIN = RegOUT;
-
+                    copiaRegALL(RegIN, RegOUT);
 
                 break;
             case 10:

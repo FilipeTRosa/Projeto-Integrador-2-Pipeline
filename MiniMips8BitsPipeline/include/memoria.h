@@ -1,3 +1,7 @@
+#ifndef MEMORIA_H
+#define MEMORIA_H
+
+
 typedef struct RegistradorInstrucao RegINST;
 typedef struct RegistradorDados RegMDR;
 
@@ -44,7 +48,4 @@ void salvarAsm(const char *nomeArquivo, struct memoria_instrucao *memInst);
 const char* imprimeTipo(enum classe_inst tipo);
 //void salvarMemoriaEmArquivo(const char *nomeArquivo, struct memoria_instrucao *mem);
 
-// ------------------- DADOS ------------------------
-
-// void insereDadosMem(struct memoria_instrucao *mem, int endereco, int valor, int sinalControle);
-// int getDado(struct memoria_instrucao *mem, int endereco);
+#endif 
