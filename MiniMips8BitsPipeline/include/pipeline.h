@@ -1,3 +1,8 @@
+#ifndef PIPELINE_H
+#define PIPELINE_H
+#include "controle.h"
+#include "memoria.h"
+
 typedef struct Registrador_BIDI RegBIDI;
 typedef struct Registrador_DIEX RegDIEX;
 typedef struct Registrador_EXMEM RegEXMEM;
@@ -12,7 +17,8 @@ struct Registrador_BIDI {
 
 struct Registrador_DIEX {
     //ADICIONAR ASSEMBLY
-    CTRL *controle_DIEX; //arrumar questao do ponteiro   
+    char assembly[50];
+    CTRL * controle_DIEX; //arrumar questao do ponteiro   
     int RegA;
     int RegB;
     int imm;
@@ -23,8 +29,9 @@ struct Registrador_DIEX {
 
 struct Registrador_EXMEM{
     //assembly
-    CTRL *controle_EXEMEM;
-    int resultULA;
+    char assembly[50];
+    CTRL * controle_EXEMEM;
+    int * resultULA;
     int RegB;
     int rd;
     
@@ -32,8 +39,9 @@ struct Registrador_EXMEM{
 
 struct Registrador_MEMER{
     //assembly
-    CTRL *controle_MEMER;
-    int resultULA;
+    char assembly[50];
+    CTRL * controle_MEMER;
+    int * resultULA;
     int dado;
     int rd;
 };
@@ -52,3 +60,6 @@ RegDIEX* criaRegDIEX();
 RegEXMEM* criaRegEXMEM();
 RegMEMER* criaRegMEMER();
 struct instrucao criaIR();
+
+
+#endif 

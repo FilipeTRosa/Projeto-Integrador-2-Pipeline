@@ -1,3 +1,4 @@
+#include "pipeline.h"
 #include "memoriaDados.h"
 #include "memoria.h"
 #include "minimips.h"

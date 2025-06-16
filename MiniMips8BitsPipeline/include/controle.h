@@ -1,3 +1,6 @@
+#ifndef CONTROLE_H
+#define CONTROLE_H
+
 typedef struct controle CTRL;
 
 struct controle {
@@ -17,3 +20,5 @@ CTRL* criaControle();
 void setSignal(CTRL* control, int opcode, int funct);
 void imprimeControle(CTRL *controle);
 void nextState(int *state, int opcode, int funct);
+
+#endif 

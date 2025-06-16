@@ -1,5 +1,4 @@
-// #include "decodificador.h"
-// #include "memoria.h"
+
 
 
 typedef struct bancoRegistradores BRegs;
@@ -14,47 +13,6 @@ typedef struct nodo nodoPilha;
 typedef struct RegistradorDados RegMDR;
 typedef struct saidaULA ULAsaida;
 typedef struct dado dados;
-
-/*
-num classe_inst{
-    tipo_R, tipo_I, tipo_J, tipo_OUTROS
-    };
-
-enum tipo_mem{
-    tipo_instrucao, tipo_dado
-};
-
-
-struct instrucao{
-enum tipo_mem tipo_mem;
-int instCount;
-enum classe_inst tipo_inst;
-char inst_char[17];
-char assembly[50];
-int opcode;
-int rs;
-int rt;
-int rd;
-int funct;
-int imm;
-int addr;
-    };
-
-struct memoria_instrucao{
-    struct instrucao *mem_inst;
-    int tamanho;
-    };
-*/
-
-// struct dado{
-//     char dado_char[8];
-//     int dado;
-// };
-
-// struct memoria_dados{
-// struct dado *mem_dados;
-// int tamanho;
-//     };
 
 struct bancoRegistradores
 {
@@ -110,14 +68,6 @@ void imprimeBanco(BRegs* bancoRegs);
 int* buscaBancoRegs(BRegs* bancoRegs, int rs, int rt, int rd, int defDest);
 void salvaDadoReg(BRegs* bancoRegistradores, int resultadoULA, int vetBuscaReg,  int sinalControle);
 
-
-// ================== MEMORIA DE DADOS  ============================= //
-// void carregarDados(const char *nomeArquivo, struct memoria_dados *memDados);
-// void imprimeDado(struct dado dado);
-// void imprimeMemDados(struct memoria_dados *mem);
-//void insereMemDados(struct memoria_dados *mem, int endereco, int valor, int sinalControle);
-//int getDado(struct memoria_dados *mem, int endereco);
-//void salvarMemoriaEmArquivo(const char *nomeArquivo, struct memoria_dados *memDados);
 
 // =================== CONTROLE ===================================== //
 
