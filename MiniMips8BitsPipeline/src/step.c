@@ -1,126 +1,29 @@
+#include "pipeline.h"
 #include "memoria.h"
 #include "memoriaDados.h"
 #include "minimips.h"
 #include "controle.h"
 #include "multiplexadores.h"
 #include "decodificador.h"
-#include "pipeline.h"
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
 #include <stdio.h>
 #include "step.h"
 
-/*
-void step(int *parada, int *pc, struct memoria_dados *memDados, struct memoria_instrucao *memInst, BRegs *bancoReg, CTRL *controle, descPilha *pilha, struct estatistica * stat){
-    int *buscaReg = NULL;
-    struct instrucao instBuscada;
-    instBuscada = buscaInstrucao(memInst, *pc);
-    if (strcmp(instBuscada.inst_char, "0000000000000000") == 0) //condição DEFAULT de parada do programa
-    {
-        printf("Programa finalizado com sucesso!!!\n");
-        *parada = 0;
-    }else
-    {
-        //AQUI COLOCAR O NO DA PILHA
-        BRegs* copiaBanco = copiaBancoRegistradores(bancoReg);
-        struct memoria_dados* copiaMemDados = copiaMemoriaDados(memDados);
-        nodoPilha *newNodo = criaNodo(*pc, copiaBanco, copiaMemDados);
-        inserePilha(pilha, newNodo);
-
-        //setando variaveis de funcinamento
-        int *vetBusca = NULL;
-        int *resultadoULA = NULL;
-        int operando2;
-        //fim configuração.
-
-        printf("\n ********* Inicio da Instrução ********* \n");
-        printf("->PC: [%d]\n",*pc);
-        printf("->Instrução executada: [%s]\n", instBuscada.assembly);
-        printf("->Registradores estado antigo");
-        imprimeBanco(bancoReg);
-        if (strlen(instBuscada.inst_char) > 1)
-        {
-            setSignal(controle, instBuscada.opcode, instBuscada.funct);
-            //imprimeControle(controle);
-            switch (instBuscada.tipo_inst)
-            {
-            case tipo_R:
-                stat->tipoR++;
-                vetBusca = buscaBancoRegs(bancoReg, instBuscada.rs, instBuscada.rt, instBuscada.rd, controle->regDest); // retorna [[rs][rt][rd]]
-                operando2 = fuctionMux(vetBusca[1], instBuscada.imm, controle->srcB);// Mux para saber de onde vem o op2 da ula ->> REG/IMM <<-
-                resultadoULA = processamentoULA(vetBusca[0], operando2, controle->ulaOP);// retorna [[resultado][overflow][comparaREG]]
-                //testar flag antes
-                salvaDadoReg(bancoReg,resultadoULA[0], vetBusca[2], controle->regWrite);
-                printf("->Registradores estado novo");
-                imprimeBanco(bancoReg);
-                *pc = *pc + 1;
-                break;
-            case tipo_I:
-                stat->tipoI++;
-                if (instBuscada.opcode == 8) //beq
-                {
-                    vetBusca = buscaBancoRegs(bancoReg, instBuscada.rs, instBuscada.rt, instBuscada.rd, controle->regDest); // retorna [[rs][rt][rd]]
-                    operando2 = fuctionMux(vetBusca[1], instBuscada.imm, controle->srcB);// Mux para saber de onde vem o op2 da ula ->> REG/IMM <<-
-                    resultadoULA = processamentoULA(vetBusca[0], operando2, controle->ulaOP);// retorna [[resultado][overflow][comparaREG]]
-                    if (resultadoULA[2] == 1 && controle->branch == 1)
-                    {
-                        *pc = *pc + instBuscada.imm + 1;
-                        break;
-                    }else
-                    {
-                        *pc = *pc + 1;
-                        break;
-                    }    
-                }
-                //teste addi
-                vetBusca = buscaBancoRegs(bancoReg, instBuscada.rs, instBuscada.rt, instBuscada.rd, controle->regDest); // retorna [[rs][rt][rd]]
-                operando2 = fuctionMux(vetBusca[1], instBuscada.imm, controle->srcB);// Mux para saber de onde vem o op2 da ula ->> REG/IMM <<-
-                resultadoULA = processamentoULA(vetBusca[0], operando2, controle->ulaOP);// retorna [[resultado][overflow][comparaREG]]
-                if (controle->memReg == 1 && controle->regWrite == 1) 
-                {
-                    //se for ADDI
-                    salvaDadoReg(bancoReg,resultadoULA[0], vetBusca[2], controle->regWrite);
-                }
-                if (controle->memReg == 0 && controle->regWrite == 1)
-                {
-                    //Se for LW
-                    salvaDadoReg(bancoReg, getDado(memDados, resultadoULA[0]), vetBusca[2], controle->regWrite);
-                }
-                printf("->Registradores estado novo"); 
-                imprimeBanco(bancoReg);
-                //se for SW só salva na mem se memWrite = 1
-                insereMemDados(memDados, resultadoULA[0], vetBusca[1], controle->memWrite);
-                *pc = *pc + 1;
-                break;
-            case tipo_J:
-                stat->tipoJ++;
-                *pc = 0 + instBuscada.addr;
-                break;
-            default:
-                break;
-            }
-            printf(" ********* FIM da Instrução ********* \n\n");
-            stat->totalInstrucoes++;
-        }else
-        {
-            printf("\n Instrucao invalida.\n");
-        }
-    }
-}
-*/
 
 // Estágio 1: Busca de Instrução
 void estagio_BI(int *pc, RegBIDI *bidi_out, struct memoria_instrucao *memInst) {
     bidi_out->IR = buscaInstrucao(memInst, *pc);
     bidi_out->pc_incrementado = *pc + 1;
-
+    printf("\n========= ESTAGIO BIDI =========\n");
     printf("Detalhes da Instrução:\n");
     printf("  - Instrução: \t%s\n", bidi_out->IR.assembly);
     printf("  - Campos: \topcode=%-2d | rs=%d | rt=%d | rd=%d | funct=%d | imm=%d | addr=%d\n",
            bidi_out->IR.opcode, bidi_out->IR.rs, bidi_out->IR.rt, bidi_out->IR.rd,
            bidi_out->IR.funct, bidi_out->IR.imm, bidi_out->IR.addr);
-
+    printf("Conteudo BIDI-PCincrementado: [%d] \n", bidi_out->pc_incrementado);
+    
 }
 
 void estagio_DI(RegBIDI *bidi_in, RegDIEX *diex_out, BRegs *bancoReg, int *parada) {
@@ -130,17 +33,21 @@ void estagio_DI(RegBIDI *bidi_in, RegDIEX *diex_out, BRegs *bancoReg, int *parad
     //    *diex_out = *criaRegDIEX(); 
     //    return;
     //}
+    printf("\n========= ESTAGIO DIEX =========");
 
     setSignal(diex_out->controle_DIEX, bidi_in->IR.opcode, bidi_in->IR.funct);
+    imprimeControle(diex_out->controle_DIEX);
+    printf("Instrução -> [%s] \n", bidi_in->IR.assembly);
 
-    printf("rs: %d", bidi_in->IR.rs);
-    printf("rt: %d", bidi_in->IR.rt);
+    printf(">>> rs: [%d] - ", bidi_in->IR.rs);
+    printf("rt: [%d] - ", bidi_in->IR.rt);
     
     int *vetor_busca = buscaBancoRegs(bancoReg, bidi_in->IR.rs, bidi_in->IR.rt, bidi_in->IR.rd, diex_out->controle_DIEX->regDest);
     
-    printf("rA: %d", vetor_busca[0]);
-    printf("rB: %d", vetor_busca[1]);
+    printf("rA: [%d] - ", vetor_busca[0]);
+    printf("rB: [%d] - \n", vetor_busca[1]);
 
+    strcpy(diex_out->assembly, bidi_in->IR.assembly);
     diex_out->RegA = vetor_busca[0];
     diex_out->RegB = vetor_busca[1];
     diex_out->imm = bidi_in->IR.imm;
@@ -154,8 +61,12 @@ void estagio_DI(RegBIDI *bidi_in, RegDIEX *diex_out, BRegs *bancoReg, int *parad
 
 
 void estagio_EX(RegDIEX *diex_in, RegEXMEM *exmem_out) {
-    
+    printf("\n========= ESTAGIO EXMEM =========");
+    imprimeControle(diex_in->controle_DIEX);
+    printf("Instrução -> [%s] \n", diex_in->assembly);
+
     *(exmem_out->controle_EXEMEM) = *(diex_in->controle_DIEX);
+    strcpy(exmem_out->assembly, diex_in->assembly);
 
     Mux *muxop2 = criaMux(diex_in->RegB, diex_in->imm, 0, diex_in->controle_DIEX->srcB);
     int op2 = muxFuncition(muxop2);
@@ -172,30 +83,53 @@ void estagio_EX(RegDIEX *diex_in, RegEXMEM *exmem_out) {
 
 // Estágio 4: Acesso à Memória
 void estagio_MEM(RegEXMEM *exmem_in, RegMEMER *memer_out, struct memoria_dados *memDados) {
+
+    printf("\n========= ESTAGIO MEM =========");
+    imprimeControle(exmem_in->controle_EXEMEM);
+    printf("Instrução -> [%s] \n", exmem_in->assembly);
+
+
     *(memer_out->controle_MEMER) = *(exmem_in->controle_EXEMEM);
     memer_out->resultULA = exmem_in->resultULA;
     memer_out->rd = exmem_in->rd;
+    strcpy(memer_out->assembly, exmem_in->assembly);
     
-    if (exmem_in->controle_EXEMEM->memWrite == 1) {
-        insereMemDados(memDados, exmem_in->resultULA, exmem_in->RegB, 1);
-    } else if (exmem_in->controle_EXEMEM->memReg == 1) {
-        memer_out->dado = getDado(memDados, exmem_in->resultULA);
+
+    if ((exmem_in->controle_EXEMEM->memWrite == 1) && (exmem_in->controle_EXEMEM->memReg == 1)) {
+        //addi
+        printf("Entrou no ADDI \n");
+        insereMemDados(memDados, exmem_in->resultULA[0], exmem_in->RegB, 1);
+    } else if ((exmem_in->controle_EXEMEM->regWrite == 1) && (exmem_in->controle_EXEMEM->memReg == 0)) {
+        //LW
+        printf("Entrou no LW \n");
+        memer_out->dado = getDado(memDados, exmem_in->resultULA[0]);
+        printf("Dado buscado = [%d] \n", memer_out->dado);
     }
+    
 }
 
 void estagio_ER(RegMEMER *memer_in, BRegs *bancoReg) {
-    if (memer_in->controle_MEMER->regWrite == 1) {
+    printf("\n========= ESTAGIO ER =========");
+    imprimeControle(memer_in->controle_MEMER);
+    printf("Instrução -> [%s] \n", memer_in->assembly);
+    //printf("Resultado ULA -> [%d] \n", memer_in->resultULA[0]);
+    printf("Dado a ser escrito = [%d] \n", memer_in->dado);
 
-        Mux *muxwb = criaMux(memer_in->resultULA, memer_in->dado, 0, memer_in->controle_MEMER->memReg);
+    if (memer_in->controle_MEMER->regWrite == 1) {
+        //Mux *muxwb = criaMux(memer_in->resultULA[0], memer_in->dado, 0, memer_in->controle_MEMER->memReg); //ASSIM NAO FUNCIONAVA
+        Mux *muxwb = criaMux(memer_in->dado, memer_in->resultULA[0], 0, memer_in->controle_MEMER->memReg);
         int dado_final = muxFuncition(muxwb);
+        //printf("dado buscado = [%d] \n", dado_final);
         free(muxwb); 
         salvaDadoReg(bancoReg, dado_final, memer_in->rd, 1);
     }
+    imprimeBanco(bancoReg);
 }
 
 
-void step(int *pc, int *parada, RegALL *regIN, RegALL *regOUT, BRegs *bancoReg, struct memoria_instrucao *memInst, struct memoria_dados *memDados) {
-
+void step(int *contClock, int *pc, int *parada, RegALL *regIN, RegALL *regOUT, BRegs *bancoReg, struct memoria_instrucao *memInst, struct memoria_dados *memDados) {
+    *contClock += 1;
+    printf("Cont Clock = [%d] \n", *contClock);
     estagio_ER(regIN->MEMER, bancoReg);
     estagio_MEM(regIN->EXMEM, regOUT->MEMER, memDados);
     estagio_EX(regIN->DIEX, regOUT->EXMEM);

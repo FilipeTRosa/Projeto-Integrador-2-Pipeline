@@ -13,5 +13,5 @@ exec: $(OBJ_FILES)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f *.o exec
+	rm -f *.o exec log_run.txt
 

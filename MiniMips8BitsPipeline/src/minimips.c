@@ -1,3 +1,4 @@
+#include "pipeline.h"
 #include "memoria.h"
 #include "minimips.h"
 #include "controle.h"
@@ -45,7 +46,7 @@ int conversorBinParaDecimal (int compDeDois, char * palavra){
                 
             }
             i = len -1;
-            for (i; i>=0; i--)// for para somar 1
+            for (; i>=0; i--)// for para somar 1
             {
                 if ((binario[i] - '0') == 1)
                 {
@@ -68,7 +69,7 @@ int conversorBinParaDecimal (int compDeDois, char * palavra){
         posicao = 0;
         i = len - 1;
 
-        for (i; i>=0; i--)
+        for (; i>=0; i--)
         {
             int num = palavra[i] - '0';
             decimal += num * pow(2 , posicao);
@@ -81,7 +82,7 @@ int conversorBinParaDecimal (int compDeDois, char * palavra){
 }
 // retorna uma copia da instrução
 struct instrucao buscaInstrucao(struct memoria_instrucao * memoria, int pc){
-    struct instrucao inst;    
+    struct instrucao inst = {0};    
     if (pc < 0 || pc >= memoria->tamanho) {
         printf("Erro: PC fora do intervalo.\n");
         return inst;  // Retorna uma instrução inválida (inicializada)
@@ -90,35 +91,6 @@ struct instrucao buscaInstrucao(struct memoria_instrucao * memoria, int pc){
     return memoria->mem_inst[pc];
 }
 
-// void carregarDados(const char *nomeArquivo, struct memoria_dados *memDados){
-//     FILE *arquivo = fopen(nomeArquivo, "r");
-//     if (arquivo == NULL) {
-//         printf("Erro ao abrir o arquivo %s.\n", nomeArquivo);
-//         return;
-//     }
-
-//     char linha[32];
-//     int posicao = 0;
-
-//     // Inicializa a memória com um valor padrão (0 para indicar "vazio")
-//     for (int i = 0; i < memDados->tamanho; i++) {
-//         memDados->mem_dados[i].dado = 0;
-//         strcpy(memDados->mem_dados[i].dado_char, "vazio");
-//     }
-
-//     while (posicao < memDados->tamanho && fgets(linha, sizeof(linha), arquivo) != NULL) {
-//         // Remove quebras de linha e espaços extras
-//         linha[strcspn(linha, "\r\n")] = '\0';
-
-//         if (strlen(linha) > 0) {  // Se a linha não estiver vazia
-//             memDados->mem_dados[posicao].dado = atoi(linha);
-//             snprintf(memDados->mem_dados[posicao].dado_char, sizeof(memDados->mem_dados[posicao].dado_char), "%d", memDados->mem_dados[posicao].dado);
-//         }
-//         posicao++;
-//     }
-
-//     fclose(arquivo);
-// }
 
 BRegs* alocaBancoRegistradores() {
 
@@ -185,21 +157,6 @@ void imprimeBanco(BRegs* bancoRegs) {
 }
 
 
-
-// void imprimeDado(struct dado dado){
-//     printf("Valor: [%d]\n", dado.dado);
-// }
-
-// void imprimeMemDados(struct memoria_dados *mem){
-//     printf("==== Memoria de dados ====\n");
-//     for (int i = 0; i < mem->tamanho; i++)
-//     {
-//         printf("Posicao: [%d], ", i);
-//         imprimeDado(mem->mem_dados[i]);
-//     }
-//     printf("==========================\n");
-// }
-
 int* buscaBancoRegs(BRegs* bancoRegs, int rs, int rt, int rd, int defDest) {
     
     regs *aux = bancoRegs->registradores;
@@ -209,7 +166,7 @@ int* buscaBancoRegs(BRegs* bancoRegs, int rs, int rt, int rd, int defDest) {
         rd = rt;
     }
 
-    while(aux != NULL & aux->id != rs) {
+    while((aux != NULL) & (aux->id != rs)) {
         aux = aux->prox;
     }
 
@@ -313,6 +270,9 @@ int fuctionMux(int op1, int op2, int controleULA) {
     else if(controleULA == 1) {
         return op2;
     }
+
+    return 10; // erro 
+
 }
 
 int verificaOverflow(int opResult) {
@@ -496,16 +456,6 @@ nodoPilha* criaNodo(int pc, BRegs* bancoRegs, memDados* memoriaDados) {
     return new_nodo;
 }
 
-// struct memoria_dados* copiaMemoriaDados(struct memoria_dados* memoriaDados) {
-//     struct memoria_dados *newMemoria = (struct memoria_dados *)malloc(sizeof(struct memoria_dados));
-//     newMemoria->mem_dados = (struct dado *)malloc(memoriaDados->tamanho * sizeof(struct dado));
-
-//     for(int i = 0; i < memoriaDados->tamanho; i++) {
-//         newMemoria->mem_dados[i] = memoriaDados->mem_dados[i];
-//     }
-
-//     return newMemoria;
-// }
 
 BRegs* copiaBancoRegistradores(BRegs* bancoRegs) {
     

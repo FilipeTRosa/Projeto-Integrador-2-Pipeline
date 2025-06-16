@@ -1,3 +1,4 @@
+#include "pipeline.h"
 #include "memoria.h"
 #include "minimips.h"
 #include "controle.h"
@@ -35,5 +36,5 @@ int muxFuncition(Mux* mux) {
     else if(mux->selection == 2) {
         return mux->input3;
     }
-
+    return 0; //caso nenuma opção for satisfeita
 }
