@@ -67,4 +67,23 @@ void copiaRegEXMEM(RegEXMEM *out, RegEXMEM *in);
 void copiaRegMEMER(RegMEMER *out, RegMEMER *in);
 void copiaRegALL(RegALL *out, RegALL *in);
 
+
+// IMPRESSÔES DOS REGISTRADORES //
+void imprimeBIDI(struct Registrador_BIDI b);
+void imprimeDIEX(struct Registrador_DIEX d);
+void imprimeEXMEM(struct Registrador_EXMEM e);
+void imprimeMEMER(struct Registrador_MEMER m);
+void imprimePipeline(
+    int ciclo,
+    struct Registrador_BIDI *bidi,
+    struct Registrador_DIEX *diex,
+    struct Registrador_EXMEM *exmem,
+    struct Registrador_MEMER *memer
+);
+
+// TRATAMENTO DE HAZARD //
+int detectaDataHazard(RegDIEX *diex, struct instrucao instrucao_ID);
+
+
+
 #endif 

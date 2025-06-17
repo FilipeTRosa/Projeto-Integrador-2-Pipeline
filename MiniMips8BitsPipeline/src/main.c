@@ -181,7 +181,7 @@ int main(int argc, char const *argv[])
                 wgetnstr(inputInterface, arquivoMemDados, 49);
                 delwin(inputInterface);
                 noecho();
-                salvarMemoriaEmArquivo(arquivoMemDados, &mem);
+                salvarMemoriaEmArquivo(arquivoMemDados, &memDados);
                 
                 break;
             /*case 8:

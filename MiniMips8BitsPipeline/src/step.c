@@ -33,6 +33,15 @@ void estagio_DI(RegBIDI *bidi_in, RegDIEX *diex_out, BRegs *bancoReg, int *parad
     //    *diex_out = *criaRegDIEX(); 
     //    return;
     //}
+
+    // TRATA HAZARD DE DADOS ---- LW ---- //
+    if (detectaDataHazard(diex_out, bidi_in->IR)) {
+        printf("\n### STALL | BOLHA inserido(a) por hazard de dados ###\n");
+        *parada = 0; // Pausa o pipeline, não avança BI
+        *diex_out = *criaRegDIEX(); // injeta bolha
+        return;
+    }
+
     printf("\n========= ESTAGIO DI =========");
 
     setSignal(diex_out->controle_DIEX, bidi_in->IR.opcode, bidi_in->IR.funct);
@@ -128,7 +137,8 @@ void estagio_ER(RegMEMER *memer_in, BRegs *bancoReg) {
 
 void step(int *contClock, int *pc, int *parada, RegALL *regIN, RegALL *regOUT, BRegs *bancoReg, struct memoria_instrucao *memInst, struct memoria_dados *memDados) {
     *contClock += 1;
-    printf("Cont Clock = [%d] \n", *contClock);
+    //printf("======== Inicio Step ========\n");
+    //printf("Cont Clock = [%d] \n", *contClock);
     estagio_ER(regIN->MEMER, bancoReg);
     estagio_MEM(regIN->EXMEM, regOUT->MEMER, memDados);
     estagio_EX(regIN->DIEX, regOUT->EXMEM);
@@ -139,6 +149,24 @@ void step(int *contClock, int *pc, int *parada, RegALL *regIN, RegALL *regOUT, B
         *(regOUT->BIDI) = *criaRegBIDI(); 
     }
 
+
+    /*IDEIA DE TRATAMENTO PARA J E BEQ
+    
+    if (regOUT->DIEX->controle_DIEX->jump == 1) {
+    *pc = regOUT->DIEX->imm;
+    *(regOUT->BIDI) = *criaRegBIDI(); // flush em BI
+    *(regOUT->DIEX) = *criaRegDIEX(); // flush em DI
+    } else if (regOUT->EXMEM->controle_EXEMEM->branch == 1 && regOUT->EXMEM->resultULA[0] == 0) {
+        // BEQ verdadeiro → branch taken
+        *pc = regIN->DIEX->pc_incrementado + regIN->DIEX->imm;
+        *(regOUT->BIDI) = *criaRegBIDI(); // flush em BI
+        *(regOUT->DIEX) = *criaRegDIEX(); // flush em DI
+    } else if (*parada) {
+        *pc = regOUT->BIDI->pc_incrementado;
+    }
+    
+    */
+
     // incrementar o PC
     if (regOUT->DIEX->controle_DIEX->jump == 1) {
         *pc = regOUT->DIEX->imm;
@@ -148,6 +176,8 @@ void step(int *contClock, int *pc, int *parada, RegALL *regIN, RegALL *regOUT, B
         *pc = regOUT->BIDI->pc_incrementado;
     }
 
+    imprimePipeline(*contClock, regOUT->BIDI, regOUT->DIEX, regOUT->EXMEM, regOUT->MEMER);
+    imprimeBanco(bancoReg);
+    //printf("======== Fim Step ========\n");
 }
-
 //teste

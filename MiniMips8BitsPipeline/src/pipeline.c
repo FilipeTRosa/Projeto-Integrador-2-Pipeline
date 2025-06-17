@@ -126,3 +126,75 @@ void copiaRegALL(RegALL *in, RegALL *out) {
     copiaRegEXMEM(in->EXMEM, out->EXMEM);
     copiaRegMEMER(in->MEMER, out->MEMER);
 }
+
+
+// FUNCOES PARA IMPRIMIR REGs
+void imprimeBIDI(struct Registrador_BIDI b) {
+    printf("[BIDI] PC: [%d] | ", b.pc_incrementado);
+    imprimeInstrucao(b.IR);
+}
+
+void imprimeDIEX(struct Registrador_DIEX d) {
+    printf("[DIEX] ASM: [%s]  A: [%d] B: [%d] IMM: [%d] rt: [%d] rd: [%d] PC: [%d] | ",
+        d.assembly, d.RegA, d.RegB,d.imm, d.rt, d.rd, d.pc_incrementado);
+    if (d.controle_DIEX) imprimeControle(d.controle_DIEX);
+    else printf("CTRL: NULL\n");
+}
+
+void imprimeEXMEM(struct Registrador_EXMEM e) {
+    printf("[EXMEM] ASM: [%s] rd: [%d] B: [%d] | ", e.assembly, e.rd, e.RegB);
+    if (e.resultULA)
+        printf("ULA: [%d,%d,%d] | ", e.resultULA[0], e.resultULA[1], e.resultULA[2]);
+    else
+        printf("ULA: NULL | ");
+    if (e.controle_EXEMEM) imprimeControle(e.controle_EXEMEM);
+    else printf("CTRL: NULL\n");
+}
+
+void imprimeMEMER(struct Registrador_MEMER m) {
+    printf("[MEMER] ASM: [%s] rd: [%d] Dado: [%d] | ", m.assembly ,m.rd, m.dado);
+    if (m.resultULA)
+        printf("ULA: [%d,%d,%d] | ", m.resultULA[0], m.resultULA[1], m.resultULA[2]);
+    else
+        printf("ULA: NULL | ");
+    if (m.controle_MEMER) imprimeControle(m.controle_MEMER);
+    else printf("CTRL: NULL\n");
+}
+
+// FUNCAO QUE IMPRIME O PIPELINE
+
+void imprimePipeline(
+    int ciclo,
+    struct Registrador_BIDI *bidi,
+    struct Registrador_DIEX *diex,
+    struct Registrador_EXMEM *exmem,
+    struct Registrador_MEMER *memer
+) {
+    printf("\n======= CICLO %d =======\n", ciclo);
+
+    printf("BI/DI   → ");
+    imprimeBIDI(*bidi);
+
+    printf("\nDI/EX   → ");
+    imprimeDIEX(*diex);
+
+    printf("\nEX/MEM  → ");
+    imprimeEXMEM(*exmem);
+
+    printf("\nMEM/ER  → ");
+    imprimeMEMER(*memer);
+
+    printf("========================\n");
+}
+
+//////// UNIDADE DE HAZARD /////// Depois ver se precisa mudar para uma outra TAD
+
+int detectaDataHazard(RegDIEX *diex, struct instrucao instrucao_ID) {
+    //(diex->controle_DIEX->regWrite == 1 && diex->controle_DIEX->memReg == 0) --- LW ---
+    if ((diex->controle_DIEX->regWrite == 1 && diex->controle_DIEX->memReg == 0) && diex->rd != 0) {
+        if (diex->rd == instrucao_ID.rs || diex->rd == instrucao_ID.rt) {
+            return 1;  // Hazard detectado
+        }
+    }
+    return 0;
+}
