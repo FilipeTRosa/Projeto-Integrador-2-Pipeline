@@ -6,14 +6,25 @@
 #include "multiplexadores.h"
 #include "decodificador.h"
 #include "step.h"
+#include "interface.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <ncurses.h>
+
 
 
 int main(int argc, char const *argv[])
 {
+
+    // Configurações da interface //
+    
+    initscr();
+    cbreak();
+    noecho();
+    WINDOW* inputInterface;
+
     //Alocando memoria de instrução
     struct memoria_instrucao mem;
     mem.mem_inst = (struct instrucao *)malloc(256 *sizeof(struct instrucao));
@@ -97,36 +108,37 @@ int main(int argc, char const *argv[])
     //Fim config do sistema
 
     do {
-        printf("\n===== MENU =====\n");
-        printf("1 - Carregar memoria de instrucoes (.mem)\n");
-        printf("2 - Carregar memoria de Dados (.dat)\n");
-        printf("3 - Imprimir memorias (instrucoes e dados)\n");
-        printf("4 - Imprimir banco de registradores\n");
-        printf("5 - Imprimir todo o simulador (registradores e memorias)\n");
-        printf("6 - Salvar .asm\n");//
-        printf("7 - Salvar .dat\n");// 
-        printf("8 - Executa Programa (run)\n");// estudar forma de parada... FIM do programa 
-        printf("9 - Executa uma instrucao (Step)\n");
-        printf("10 - Volta uma instrucao (Back)\n");// 
-        printf("0 - Sair\n");
-        printf("Escolha uma opcao: ");
-        setbuf(stdin, NULL);
-        scanf("%d", &menu);
+        
+        menu = menuInterface();
 
         switch (menu) {
             case 1:
-                printf("Digite o nome do arquivo de memoria.\n");
-                setbuf(stdin, NULL);
-                scanf("%[^\n]s", arquivoMemInstrucoes);
+                inputInterface = newwin(6, 95, 10, (COLS/2)-45);
+                box(inputInterface, 0, 0);
+                mvwprintw(inputInterface, 2, (95-(strlen("Digite o nome do arquivo .asm\n")))/2, "Digite o nome do arquivo .asm\n\n");
+                wrefresh(inputInterface);
+
+                keypad(inputInterface, TRUE);
+                echo();
+                wgetnstr(inputInterface, arquivoMemInstrucoes, 255);
+                delwin(inputInterface);
+                noecho();
                 carregarInstrucoes(arquivoMemInstrucoes, &mem);
                 break;
             case 2:
-                //era a mem de dados
-                printf("Digite o nome do arquivo de memoria.\n");
-                setbuf(stdin, NULL);
-                scanf("%[^\n]s", arquivoMemDados);
+                inputInterface = newwin(6, 95, 10, (COLS/2)-45);
+                box(inputInterface, 0, 0);
+                mvwprintw(inputInterface, 2, (95-(strlen("Digite o nome do arquivo .dat\n")))/2, "Digite o nome do arquivo .dat\n\n");
+                wrefresh(inputInterface);
+
+                keypad(inputInterface, TRUE);
+                echo();
+                wgetnstr(inputInterface, arquivoMemDados, 255);
+                delwin(inputInterface);
+                noecho();
                 carregarDados(arquivoMemDados, &memDados); 
                 break;
+            /*
             case 3:
                 //imprime memorias
                 system("clear");
@@ -143,24 +155,36 @@ int main(int argc, char const *argv[])
                 imprimeBanco(bancoRegistradores);
                 imprimeEstatistica(stat);
                 break;
+                */
             case 6:
-                system("clear");
-                printf("Digite o nome do arquivo para salvar.\n");
-                setbuf(stdin, NULL);
-                scanf("%[^\n]s", arquivoAsm);
+                inputInterface = newwin(6, 95, 10, (COLS/2)-45);
+                box(inputInterface, 0, 0);
+                mvwprintw(inputInterface, 2, (95-(strlen("Digite o nome do arquivo para salvar\n")))/2, "Digite o nome do arquivo para salvar\n\n");
+                wrefresh(inputInterface);
+
+                keypad(inputInterface, TRUE);
+                echo();
+                wgetnstr(inputInterface, arquivoAsm, 49);
+                delwin(inputInterface);
+                noecho();
                 salvarAsm(arquivoAsm, &mem);
 
                 break;
             case 7:
-                //salvar .dat
-                system("clear");
-                printf("Digite o nome do arquivo para salvar.\n");
-                setbuf(stdin, NULL);
-                scanf("%[^\n]s", arquivoMemDados);
-                //salvarMemoriaEmArquivo(arquivoMemDados, &mem);
+                inputInterface = newwin(6, 95, 10, (COLS/2)-45);
+                box(inputInterface, 0, 0);
+                mvwprintw(inputInterface, 2, (95-(strlen("Digite o nome do arquivo para salvar\n")))/2, "Digite o nome do arquivo para salvar\n\n");
+                wrefresh(inputInterface);
+
+                keypad(inputInterface, TRUE);
+                echo();
+                wgetnstr(inputInterface, arquivoMemDados, 49);
+                delwin(inputInterface);
+                noecho();
+                salvarMemoriaEmArquivo(arquivoMemDados, &mem);
                 
                 break;
-            case 8:
+            /*case 8:
                 {FILE *log = freopen("log_run.txt", "w", stdout);
                 if (!log) { perror("Erro ao abrir log"); break; }
                 // int contador = 0;
@@ -175,16 +199,19 @@ int main(int argc, char const *argv[])
                 freopen("/dev/tty", "w", stdout); // volta para terminal
                 imprimeLogNoTerminal("log_run.txt");
                 break; }
+                */
             case 9:
 
                     //step(&parada, &pc, &mem, bancoRegistradores, controle, pilha, stat, &estadoControle, &regSaidaULA->resultULA, regMDR, &RegA, &RegB, regIR);
                     // step(&parada, &pc, &memDados, &mem, bancoRegistradores, controle, pilha, stat
+
+                    endwin();
+
                     step(&contClock, &pc, &parada, RegIN, RegOUT, bancoRegistradores, &mem, &memDados);
-                    
                     RegIN = RegOUT;
 
-
                 break;
+            /*
             case 10:
                 printf("\nBACK\n");
                 nodoPilha *voltaInstrucao = removePilha(pilha);
@@ -203,13 +230,12 @@ int main(int argc, char const *argv[])
 
                 //printStack(pilha);
                 break;
-            case 0: 
-                system("clear");
-                printf("Saindo...\n"); 
+                */
+            case 12: 
+                endwin();
                 break;
-            default: printf("Opção inválida! Tente novamente.\n");
         }
-    } while (menu != 0);
+    } while (menu != 12);
     
     free(mem.mem_inst);
     return 0;
