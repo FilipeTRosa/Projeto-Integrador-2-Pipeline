@@ -91,3 +91,38 @@ RegALL* criaRegAll(){
 
     return new_reg;
 }
+
+void copiaRegBIDI(RegBIDI *in, RegBIDI *out) {
+    *in = *out;
+}
+
+void copiaRegDIEX(RegDIEX *in, RegDIEX *out) {
+    *(in->controle_DIEX) = *(out->controle_DIEX);
+    in->RegA = out->RegA;
+    in->RegB = out->RegB;
+    in->imm = out->imm;
+    in->rt = out->rt;
+    in->rd = out->rd;
+    in->pc_incrementado = out->pc_incrementado;
+}
+
+void copiaRegEXMEM(RegEXMEM *in, RegEXMEM *out) {
+    *(in->controle_EXEMEM) = *(out->controle_EXEMEM);
+    in->resultULA = out->resultULA;
+    in->RegB = out->RegB;
+    in->rd = out->rd;
+}
+
+void copiaRegMEMER(RegMEMER *in, RegMEMER *out) {
+    *(in->controle_MEMER) = *(out->controle_MEMER);
+    in->resultULA = out->resultULA;
+    in->dado = out->dado;
+    in->rd = out->rd;
+}
+
+void copiaRegALL(RegALL *in, RegALL *out) {
+    copiaRegBIDI(in->BIDI, out->BIDI);
+    copiaRegDIEX(in->DIEX, out->DIEX);
+    copiaRegEXMEM(in->EXMEM, out->EXMEM);
+    copiaRegMEMER(in->MEMER, out->MEMER);
+}

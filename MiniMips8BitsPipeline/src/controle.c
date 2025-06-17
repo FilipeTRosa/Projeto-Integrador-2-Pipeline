@@ -46,10 +46,11 @@ void setSignal(CTRL* control, int opcode, int funct) {
 
             control->regDest = 1;
             control->srcB = 0;
-            control->memReg = 0;
+            control->memReg = 1;
             control->memWrite = 0;
             control->regWrite = 1;
             control->branch = 0;
+            control->jump = 0;
             break;
         case 2://jump
             control->regDest = 0;
@@ -59,7 +60,7 @@ void setSignal(CTRL* control, int opcode, int funct) {
             control->regWrite = 0;
             control->branch = 0;
             control->ulaOP = 0;
-            
+            control->jump = 1;
             break;
         case 4: //ADDI
             control->regDest = 0;
@@ -69,6 +70,7 @@ void setSignal(CTRL* control, int opcode, int funct) {
             control->regWrite = 1;
             control->branch = 0;
             control->ulaOP = 1;
+            control->jump = 0;
             break;
         case 8: //BEQ
             control->regDest = 0;
@@ -78,6 +80,7 @@ void setSignal(CTRL* control, int opcode, int funct) {
             control->regWrite = 0;
             control->branch = 1;
             control->ulaOP = 6;
+            control->jump = 0;
             break;
         case 11://LW
             control->regDest = 0;
@@ -86,8 +89,8 @@ void setSignal(CTRL* control, int opcode, int funct) {
             control->memWrite = 0;
             control->regWrite = 1;
             control->branch = 0;
-            control->ulaOP = 3; //o certo seria 3 mas ta dando conflito na ULA com o case 3
-
+            control->ulaOP = 7; //o certo seria 3 mas ta dando conflito na ULA com o case 3
+            control->jump = 0;
             break;
         case 15://SW
             control->regDest = 0;
@@ -97,6 +100,7 @@ void setSignal(CTRL* control, int opcode, int funct) {
             control->regWrite = 0;
             control->branch = 0;
             control->ulaOP = 7;
+            control->jump = 0;
             break;
         default:
             printf("\nOpcode nao pertence ao conjunto de instrucoes!!\n");
