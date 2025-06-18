@@ -42,12 +42,10 @@ void estagio_DI(RegBIDI *bidi_in, RegDIEX *diex_out, BRegs *bancoReg, int *parad
         return;
     }
 
-    printf("\n========= ESTAGIO DI =========");
-
+    printf("\n========= ESTAGIO DI =========\n");
     setSignal(diex_out->controle_DIEX, bidi_in->IR.opcode, bidi_in->IR.funct);
+    printf("Instrução -> [%s]", bidi_in->IR.assembly);
     imprimeControle(diex_out->controle_DIEX);
-    printf("Instrução -> [%s] \n", bidi_in->IR.assembly);
-
     printf(">>> rs: [%d] - ", bidi_in->IR.rs);
     printf("rt: [%d] - ", bidi_in->IR.rt);
     
@@ -60,6 +58,7 @@ void estagio_DI(RegBIDI *bidi_in, RegDIEX *diex_out, BRegs *bancoReg, int *parad
     diex_out->RegA = vetor_busca[0];
     diex_out->RegB = vetor_busca[1];
     diex_out->imm = bidi_in->IR.imm;
+    diex_out->addr = bidi_in->IR.addr;
     diex_out->rt = bidi_in->IR.rt;
     diex_out->rd = bidi_in->IR.rd;
     diex_out->pc_incrementado = bidi_in->pc_incrementado;
@@ -70,9 +69,9 @@ void estagio_DI(RegBIDI *bidi_in, RegDIEX *diex_out, BRegs *bancoReg, int *parad
 
 
 void estagio_EX(RegDIEX *diex_in, RegEXMEM *exmem_out) {
-    printf("\n========= ESTAGIO EX =========");
-    imprimeControle(diex_in->controle_DIEX);
-    printf("Instrução -> [%s] \n", diex_in->assembly);
+    printf("\n========= ESTAGIO EX =========\n");
+    printf("Instrução -> [%s]", diex_in->assembly);
+    imprimeControle(diex_in->controle_DIEX);    
 
     *(exmem_out->controle_EXEMEM) = *(diex_in->controle_DIEX);
     strcpy(exmem_out->assembly, diex_in->assembly);
@@ -93,17 +92,15 @@ void estagio_EX(RegDIEX *diex_in, RegEXMEM *exmem_out) {
 // Estágio 4: Acesso à Memória
 void estagio_MEM(RegEXMEM *exmem_in, RegMEMER *memer_out, struct memoria_dados *memDados) {
 
-    printf("\n========= ESTAGIO MEM =========");
+    printf("\n========= ESTAGIO MEM =========\n");
+    printf("Instrução -> [%s]", exmem_in->assembly);
     imprimeControle(exmem_in->controle_EXEMEM);
-    printf("Instrução -> [%s] \n", exmem_in->assembly);
-
-
+   
     *(memer_out->controle_MEMER) = *(exmem_in->controle_EXEMEM);
     memer_out->resultULA = exmem_in->resultULA;
     memer_out->rd = exmem_in->rd;
     strcpy(memer_out->assembly, exmem_in->assembly);
     
-
     if ((exmem_in->controle_EXEMEM->memWrite == 1) && (exmem_in->controle_EXEMEM->memReg == 1)) {
         //addi
         printf("Entrou no ADDI (SW??) \n");
@@ -144,18 +141,21 @@ void step(int *contClock, int *pc, int *parada, RegALL *regIN, RegALL *regOUT, B
     estagio_EX(regIN->DIEX, regOUT->EXMEM);
     estagio_DI(regIN->BIDI, regOUT->DIEX, bancoReg, parada);
     if (*parada) {
+        printf("COMEÇOLLLLL");
+        printf("PC ----->> %d", *pc);
         estagio_BI(pc, regOUT->BIDI, memInst);
     } else {
         *(regOUT->BIDI) = *criaRegBIDI(); 
     }
 
-
-    /*IDEIA DE TRATAMENTO PARA J E BEQ
+     //IDEIA DE TRATAMENTO PARA J E BEQ
     
     if (regOUT->DIEX->controle_DIEX->jump == 1) {
-    *pc = regOUT->DIEX->imm;
+    printf("Addr [%d]", regOUT->DIEX->addr);
+    *pc = 0 + regOUT->DIEX->addr;
     *(regOUT->BIDI) = *criaRegBIDI(); // flush em BI
-    *(regOUT->DIEX) = *criaRegDIEX(); // flush em DI
+    printf("PC ----->> %d", *pc);
+    //*(regOUT->DIEX) = *criaRegDIEX(); // flush em DI
     } else if (regOUT->EXMEM->controle_EXEMEM->branch == 1 && regOUT->EXMEM->resultULA[0] == 0) {
         // BEQ verdadeiro → branch taken
         *pc = regIN->DIEX->pc_incrementado + regIN->DIEX->imm;
@@ -165,8 +165,7 @@ void step(int *contClock, int *pc, int *parada, RegALL *regIN, RegALL *regOUT, B
         *pc = regOUT->BIDI->pc_incrementado;
     }
     
-    */
-
+    /*
     // incrementar o PC
     if (regOUT->DIEX->controle_DIEX->jump == 1) {
         *pc = regOUT->DIEX->imm;
@@ -175,9 +174,10 @@ void step(int *contClock, int *pc, int *parada, RegALL *regIN, RegALL *regOUT, B
     } else if (*parada) {
         *pc = regOUT->BIDI->pc_incrementado;
     }
+    */
 
-    imprimePipeline(*contClock, regOUT->BIDI, regOUT->DIEX, regOUT->EXMEM, regOUT->MEMER);
-    imprimeBanco(bancoReg);
+    //imprimePipeline(*contClock, regOUT->BIDI, regOUT->DIEX, regOUT->EXMEM, regOUT->MEMER);
+    //imprimeBanco(bancoReg);
     //printf("======== Fim Step ========\n");
 }
 //teste

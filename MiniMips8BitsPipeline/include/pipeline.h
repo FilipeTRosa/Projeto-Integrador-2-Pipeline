@@ -22,6 +22,7 @@ struct Registrador_DIEX {
     int RegA;
     int RegB;
     int imm;
+    int addr;
     int rt;
     int rd;
     int pc_incrementado;

@@ -30,6 +30,7 @@ RegDIEX* criaRegDIEX(){
     new_reg->RegA = 0;
     new_reg->RegB = 0;
     new_reg->imm = 0;
+    new_reg->addr = 0;
     new_reg->rt = 0;
     new_reg->rd = 0;
     new_reg->pc_incrementado = 0;
@@ -101,6 +102,7 @@ void copiaRegDIEX(RegDIEX *in, RegDIEX *out) {
     in->RegA = out->RegA;
     in->RegB = out->RegB;
     in->imm = out->imm;
+    in->addr = out->addr;
     in->rt = out->rt;
     in->rd = out->rd;
     in->pc_incrementado = out->pc_incrementado;
