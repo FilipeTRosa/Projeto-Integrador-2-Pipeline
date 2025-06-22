@@ -117,3 +117,26 @@ void imprimeControle(CTRL *controle){
         controle->regWrite, controle->branch, controle->jump);
 }
 
+int isLW(CTRL *controle){
+    if (controle->regWrite == 1 && controle->memReg == 0)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+int isADDI(CTRL *controle){
+    if (controle->regDest == 0 && controle->regWrite == 1 && controle->memReg == 1)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+int isTipoR(CTRL * controle){
+    if (controle->regDest == 1 && controle->regWrite == 1 && controle->memReg == 1)
+    {
+        return 1;
+    }
+    return 0;
+}

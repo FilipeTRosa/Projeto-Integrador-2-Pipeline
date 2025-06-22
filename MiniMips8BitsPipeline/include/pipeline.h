@@ -16,8 +16,9 @@ struct Registrador_BIDI {
 };
 
 struct Registrador_DIEX {
-    //ADICIONAR ASSEMBLY
+      //ADICIONAR ASSEMBLY
     char assembly[50];
+    char binario[17];
     CTRL * controle_DIEX; //arrumar questao do ponteiro   
     int RegA;
     int RegB;
@@ -25,6 +26,7 @@ struct Registrador_DIEX {
     int addr;
     int rt;
     int rd;
+    int rs;
     int pc_incrementado;
 };
 
@@ -82,8 +84,10 @@ void imprimePipeline(
     struct Registrador_MEMER *memer
 );
 
+
 // TRATAMENTO DE HAZARD //
 int detectaDataHazard(RegDIEX *diex, struct instrucao instrucao_ID);
+int unidadeDeHazard(RegALL *regIN, RegALL *regOUT);
 
 
 

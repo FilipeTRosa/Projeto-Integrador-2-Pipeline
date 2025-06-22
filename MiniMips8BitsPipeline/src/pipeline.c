@@ -26,6 +26,7 @@ RegDIEX* criaRegDIEX(){
     RegDIEX* new_reg = (RegDIEX*)malloc(sizeof(RegDIEX));
 
     strcpy(new_reg->assembly, "vazio");
+    strcpy(new_reg->binario, "0000000000000000");
     new_reg->controle_DIEX = criaControle();
     new_reg->RegA = 0;
     new_reg->RegB = 0;
@@ -33,6 +34,7 @@ RegDIEX* criaRegDIEX(){
     new_reg->addr = 0;
     new_reg->rt = 0;
     new_reg->rd = 0;
+    new_reg->rs = 0;
     new_reg->pc_incrementado = 0;
     
     return new_reg;
@@ -99,12 +101,14 @@ void copiaRegBIDI(RegBIDI *in, RegBIDI *out) {
 
 void copiaRegDIEX(RegDIEX *in, RegDIEX *out) {
     *(in->controle_DIEX) = *(out->controle_DIEX);
+    //(in->binario, out->binario);
     in->RegA = out->RegA;
     in->RegB = out->RegB;
     in->imm = out->imm;
     in->addr = out->addr;
     in->rt = out->rt;
     in->rd = out->rd;
+    in->rs = out->rs;
     in->pc_incrementado = out->pc_incrementado;
 }
 
@@ -189,14 +193,89 @@ void imprimePipeline(
     printf("========================\n");
 }
 
+
+
+
 //////// UNIDADE DE HAZARD /////// Depois ver se precisa mudar para uma outra TAD
 
-int detectaDataHazard(RegDIEX *diex, struct instrucao instrucao_ID) {
+int detectaDataHazard(RegDIEX *diex, struct instrucao instBuscada) {
     //(diex->controle_DIEX->regWrite == 1 && diex->controle_DIEX->memReg == 0) --- LW ---
     if ((diex->controle_DIEX->regWrite == 1 && diex->controle_DIEX->memReg == 0) && diex->rd != 0) {
-        if (diex->rd == instrucao_ID.rs || diex->rd == instrucao_ID.rt) {
+        if (diex->rd == instBuscada.rs || diex->rd == instBuscada.rt) {
             return 1;  // Hazard detectado
         }
+    }
+    return 0;
+}
+
+int unidadeDeHazard(RegALL *regIN, RegALL *regOUT){
+    printf("Entrou na U-H 222222222\n");
+    printf("inst %s \n", regIN->BIDI->IR.inst_char);
+    if (isNOP(regOUT->DIEX->rs, regOUT->DIEX->rt, regOUT->DIEX->rd))
+    {
+        //printf("VAZIO ou NULLO\n");
+        return 0;
+    }else{
+        printf("Entrou na U-H\n");
+        //hazard dados para SW -
+        if (regOUT->DIEX->controle_DIEX->memWrite == 1)
+        {
+            printf("Entrou na U-H para SW\n");
+            //    -- teste 1 tipo r no EX --             --- teste 2 tipoR no ER--                       
+            if((regOUT->EXMEM->rd == regOUT->DIEX->rt) || (regOUT->MEMER->rd == regOUT->DIEX->rt)){
+                printf("Hazard Detectado\n");
+                return 1;
+            }
+            //tem LW no EX                                             rd do lw == rd do sw
+            if (isLW(regOUT->EXMEM->controle_EXEMEM) && (regOUT->EXMEM->rd == regOUT->DIEX->rt))
+            {
+                printf("Hazard Detectado\n");
+                return 1;
+            }
+            //tem ADDI no EX ou no ER
+            if (isADDI(regOUT->EXMEM->controle_EXEMEM) || isADDI(regOUT->MEMER->controle_MEMER))
+            {
+                //agora tenho que testar o RT
+                if (regOUT->EXMEM->rd == regOUT->DIEX->rt || regOUT->MEMER->rd == regOUT->DIEX->rt)
+                {
+                    printf("Hazard Detectado\n");
+                    return 1;
+                } 
+            }
+            
+        }
+
+        //--- LW ---
+        if (isLW(regOUT->DIEX->controle_DIEX) && (regOUT->DIEX->rs != 0)){
+            //printf("Entrou na U-H para LW\n");
+            if ((regOUT->EXMEM->rd == regOUT->DIEX->rs) || (regOUT->MEMER->rd == regOUT->DIEX->rs)) {
+                printf("Hazard Detectado --- LW ---\n");
+                return 1;  // Hazard detectado
+            }
+        }
+
+        //hazard dados para TipoR
+        if(isTipoR(regOUT->DIEX->controle_DIEX)){
+            //printf("Entrou na U-H para TipoR\n");
+            int rs = regOUT->DIEX->rs;
+            int rt = regOUT->DIEX->rt;
+            
+            if ((regOUT->EXMEM->rd == rt) || (regOUT->MEMER->rd == rt) || (regOUT->EXMEM->rd == rs) || (regOUT->MEMER->rd == rs))
+            {
+                printf("Hazard Detectado TipoR\n");
+                return 1;
+            }
+        }
+
+        //ADDI
+        if (isADDI(regOUT->DIEX->controle_DIEX))
+        {
+            if ((regOUT->EXMEM->rd == regOUT->DIEX->rs) || (regOUT->MEMER->rd == regOUT->DIEX->rs))
+            {
+                printf("Hazard Detectado - ADDI\n");
+                return 1;
+            }   
+        }  
     }
     return 0;
 }

@@ -107,6 +107,16 @@ RegINST* criaRegIR() {
     return newReg;
 }
 
+
+int isNOP(int rs, int rt, int rd){
+    if (rd == 0 && rs == 0 && rt == 0)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+
 // void atualizaMDR(RegMDR *regMDR, int new_dados) {
     
 //     regMDR->dado = new_dados;

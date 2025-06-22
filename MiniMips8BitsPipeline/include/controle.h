@@ -20,5 +20,7 @@ CTRL* criaControle();
 void setSignal(CTRL* control, int opcode, int funct);
 void imprimeControle(CTRL *controle);
 void nextState(int *state, int opcode, int funct);
-
+int isLW(CTRL *controle);
+int isADDI(CTRL *controle);
+int isTipoR(CTRL * controle);
 #endif 

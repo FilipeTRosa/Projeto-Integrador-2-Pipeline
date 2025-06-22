@@ -36,6 +36,7 @@ struct RegistradorInstrucao {
     struct instrucao inst;  
 };
 
+int isNOP(int rs, int rt, int rd);
 void atualizaIR(RegINST *ir, struct instrucao nova_inst, int sinalControle);
 void atualizaMDR(RegMDR *regMDR, int new_dado);
 RegINST* criaRegIR();

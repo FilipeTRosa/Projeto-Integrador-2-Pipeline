@@ -191,14 +191,12 @@ int main(int argc, char const *argv[])
 
                 while (parada)
                 {
-                    //step(&parada, &pc, &mem, bancoRegistradores, controle, pilha, stat, &estadoControle, &regSaidaULA->resultULA, regMDR, &RegA, &RegB, regIR);
-                    //step(&parada, &pc, &memDados, &mem, bancoRegistradores, controle, pilha, stat);
+                    step(&contClock, &pc, &parada, RegIN, RegOUT, bancoRegistradores, &mem, &memDados);
                 }
                 fflush(stdout);
                 fclose(log);
                 freopen("/dev/tty", "w", stdout); // volta para terminal
                 imprimeLogNoTerminal("log_run.txt");
-                break; }
                 */
             case 9:
 
