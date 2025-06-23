@@ -24,6 +24,7 @@ int main(int argc, char const *argv[])
     cbreak();
     noecho();
     WINDOW* inputInterface;
+    WINDOW* stepInterface;
 
     //Alocando memoria de instrução
     struct memoria_instrucao mem;
@@ -124,6 +125,8 @@ int main(int argc, char const *argv[])
                 delwin(inputInterface);
                 noecho();
                 carregarInstrucoes(arquivoMemInstrucoes, &mem);
+                clear();
+                wrefresh(stdscr);
                 break;
             case 2:
                 inputInterface = newwin(6, 95, 10, (COLS/2)-45);
@@ -136,7 +139,9 @@ int main(int argc, char const *argv[])
                 wgetnstr(inputInterface, arquivoMemDados, 255);
                 delwin(inputInterface);
                 noecho();
-                carregarDados(arquivoMemDados, &memDados); 
+                carregarDados(arquivoMemDados, &memDados);
+                clear();
+                wrefresh(stdscr);
                 break;
             /*
             case 3:
@@ -168,7 +173,8 @@ int main(int argc, char const *argv[])
                 delwin(inputInterface);
                 noecho();
                 salvarAsm(arquivoAsm, &mem);
-
+                clear();
+                wrefresh(stdscr);
                 break;
             case 7:
                 inputInterface = newwin(6, 95, 10, (COLS/2)-45);
@@ -182,7 +188,8 @@ int main(int argc, char const *argv[])
                 delwin(inputInterface);
                 noecho();
                 salvarMemoriaEmArquivo(arquivoMemDados, &memDados);
-                
+                clear();
+                wrefresh(stdscr);
                 break;
             /*case 8:
                 {FILE *log = freopen("log_run.txt", "w", stdout);
@@ -203,10 +210,19 @@ int main(int argc, char const *argv[])
                     //step(&parada, &pc, &mem, bancoRegistradores, controle, pilha, stat, &estadoControle, &regSaidaULA->resultULA, regMDR, &RegA, &RegB, regIR);
                     // step(&parada, &pc, &memDados, &mem, bancoRegistradores, controle, pilha, stat
 
-                    endwin();
+                    stepInterface = newwin(48, 95, 2, (COLS/2)-45);
+                    box(stepInterface, 0, 0);
+                    mvwprintw(stepInterface, 2, (95-(strlen("STEP"))/2), "STEP");
 
-                    step(&contClock, &pc, &parada, RegIN, RegOUT, bancoRegistradores, &mem, &memDados);
+                    step(&contClock, &pc, &parada, RegIN, RegOUT, bancoRegistradores, &mem, &memDados, stepInterface);
                     RegIN = RegOUT;
+
+                    wgetch(stepInterface);
+                    wrefresh(stepInterface);
+
+                    delwin(stepInterface);
+                    clear();
+                    wrefresh(stdscr);
 
                 break;
             /*

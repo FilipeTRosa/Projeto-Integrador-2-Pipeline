@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdio.h>
+#include <ncurses.h>
 
 
 CTRL* criaControle() {
@@ -109,12 +110,29 @@ void setSignal(CTRL* control, int opcode, int funct) {
 }
 
 
-void imprimeControle(CTRL *controle){
-    printf("\nControle\n"); //ta faltando incPC
-    printf("RegDst: [%d], ULAFonte [%d], MemParaReg: [%d], ULAControle: [%d], EscMem: [%d]\n",
+void imprimeControle(CTRL *controle, WINDOW* stepInterface, int flagInterface){
+
+    int linha = 0;
+
+    if(flagInterface == 1) {
+        linha = 6;
+    }
+    else if(flagInterface == 2) {
+        linha = 15;
+    }
+    else if(flagInterface == 3) {
+        linha = 21;
+    }
+    else if(flagInterface == 4) {
+        linha = 29;
+    }
+
+    mvwprintw(stepInterface, linha, 2, "Controle"); //ta faltando incPC
+    mvwprintw(stepInterface, (linha+1), 2, "RegDst: [%d], ULAFonte [%d], MemParaReg: [%d], ULAControle: [%d], EscMem: [%d]\n",
         controle->regDest, controle->srcB ,controle->memReg, controle->ulaOP, controle->memWrite);
-    printf("EscReg: [%d], branch: [%d], jump [%d]\n",
+    mvwprintw(stepInterface, 7, 2, "EscReg: [%d], branch: [%d], jump [%d]\n",
         controle->regWrite, controle->branch, controle->jump);
+    wrefresh(stepInterface);
 }
 
 int isLW(CTRL *controle){

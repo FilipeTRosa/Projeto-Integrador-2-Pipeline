@@ -1,4 +1,4 @@
-
+#include <ncurses.h>
 
 
 typedef struct bancoRegistradores BRegs;
@@ -64,7 +64,7 @@ BRegs* alocaBancoRegistradores();
 regs* criaRegistrador();
 void criaBanco(BRegs* bancoRegs, regs* reg);
 void imprimeReg(regs* reg);
-void imprimeBanco(BRegs* bancoRegs);
+void imprimeBanco(BRegs* bancoRegs, WINDOW* stepInterface);
 int* buscaBancoRegs(BRegs* bancoRegs, int rs, int rt, int rd, int defDest);
 void salvaDadoReg(BRegs* bancoRegistradores, int resultadoULA, int vetBuscaReg,  int sinalControle);
 
