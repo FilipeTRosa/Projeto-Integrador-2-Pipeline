@@ -134,26 +134,20 @@ void imprimeReg(regs* reg) {
     printf("║ $%-2d: %-4d ", reg->id, reg->valor);
 }
 
-void imprimeBanco(BRegs* bancoRegs) {
+void imprimeBanco(BRegs* bancoRegs, WINDOW* stepInterface) {
 
         regs *aux = bancoRegs->registradores;
         int contador = 0;
-        printf("\n== Banco de Registradores ==\n");
+        mvwprintw(stepInterface, 10, 2, "== Banco de Registradores ==");
         while (aux != NULL && aux->id <= 7) {
-           printf("$%-2d: %-4d  ", aux->id, aux->valor);
+           mvwprintw(stepInterface, 11, 2, "$%-2d: %-4d  ", aux->id, aux->valor);
            contador++;
-   
-           if (contador % 4 == 0) {
-               printf("\n");
-           }
-   
            aux = aux->prox;
         }
-   
-       if (contador % 4 != 0) {
-           printf("\n");
-       }
-       printf("============================\n");
+
+       mvwprintw(stepInterface, 12, 2, "============================");
+
+       wrefresh(stepInterface);
 }
 
 
@@ -405,7 +399,7 @@ descPilha* criarPilha() {
     return new_pilha;
 }
 
-void printStack(descPilha * pilha){
+/*void printStack(descPilha * pilha){
     nodoPilha *aux = pilha->instrucoes;
     while (aux != NULL)
     {
@@ -414,6 +408,8 @@ void printStack(descPilha * pilha){
     }
     
 }
+
+*/
 
 void inserePilha(descPilha* pilha, nodoPilha* nodo) {
     
