@@ -191,7 +191,8 @@ int main(int argc, char const *argv[])
 
                 while (parada)
                 {
-                    step(&contClock, &pc, &parada, RegIN, RegOUT, bancoRegistradores, &mem, &memDados);
+                    step(pilha, &contClock, &pc, &parada, RegIN, RegOUT, bancoRegistradores, &mem, &memDados);
+                    RegIN = RegOUT;
                 }
                 fflush(stdout);
                 fclose(log);
@@ -205,7 +206,7 @@ int main(int argc, char const *argv[])
 
                     endwin();
 
-                    step(&contClock, &pc, &parada, RegIN, RegOUT, bancoRegistradores, &mem, &memDados);
+                    step(pilha, &contClock, &pc, &parada, RegIN, RegOUT, bancoRegistradores, &mem, &memDados);
                     RegIN = RegOUT;
 
                 break;
@@ -219,6 +220,7 @@ int main(int argc, char const *argv[])
                     bancoRegistradores = voltaInstrucao->bancoRegs;
                     pc = voltaInstrucao->pc;
                     memDados = *voltaInstrucao->memoriaDados;
+                    RegIN = *voltaInstrucao->regInAll;
                 }
                 printf("\n ********* Instrucao Atutal apos BACK ********* \n");
                 printf("->PC: [%d]\n",pc);

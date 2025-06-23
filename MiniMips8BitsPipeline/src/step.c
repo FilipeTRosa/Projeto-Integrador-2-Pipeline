@@ -121,10 +121,17 @@ void estagio_ER(RegMEMER *memer_in, BRegs *bancoReg) {
 }
 
 
-void step(int *contClock, int *pc, int *parada, RegALL *regIN, RegALL *regOUT, BRegs *bancoReg, struct memoria_instrucao *memInst, struct memoria_dados *memDados) {
+void step(descPilha *pilha, int *contClock, int *pc, int *parada, RegALL *regIN, RegALL *regOUT, BRegs *bancoReg, struct memoria_instrucao *memInst, struct memoria_dados *memDados) {
     *contClock += 1;
     printf("======== Inicio Step ========\n");
     printf("Cont Clock = [%d] \n", *contClock);
+
+    //PILHA para StepBack
+    BRegs * copiaBanco = copiaBancoRegistradores(bancoReg);
+    struct memoria_dados * copiaMemDados = copiaMemoriaDados(memDados);
+    nodoPilha *novoNodo = criaNodo(*pc, copiaBanco, copiaMemDados, regIN);
+    inserePilha(pilha, novoNodo);
+
     estagio_ER(regIN->MEMER, bancoReg);
     estagio_MEM(regIN->EXMEM, regOUT->MEMER, memDados);
     estagio_EX(regIN->DIEX, regOUT->EXMEM);
