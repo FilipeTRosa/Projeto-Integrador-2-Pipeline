@@ -11,7 +11,6 @@
 #include <stdio.h>
 #include "step.h"
 
-
 // Estágio 1: Busca de Instrução
 void estagio_BI(int *pc, RegBIDI *bidi_out, struct memoria_instrucao *memInst) {
     bidi_out->IR = buscaInstrucao(memInst, *pc);
@@ -28,21 +27,6 @@ void estagio_BI(int *pc, RegBIDI *bidi_out, struct memoria_instrucao *memInst) {
 }
 
 void estagio_DI(RegBIDI *bidi_in, RegDIEX *diex_out, BRegs *bancoReg, int *parada) {
-    // Acessa a instrução diretamente de 'bidi_in->IR'
-    //if (strcmp(bidi_in->IR.inst_char, "0000000000000000") == 0) {
-    //    *parada = 0;
-    //    *diex_out = *criaRegDIEX(); 
-    //    return;
-    //}
-    
-
-    // TRATA HAZARD DE DADOS ---- LW ---- //
-    // if (unidadeDeHazard(bidi_in, diex_out, bidi_in->IR)) {
-    //     printf("\n### STALL | BOLHA inserido(a) por hazard de dados ###\n");
-    //     *parada = 0; // Pausa o pipeline, não avança BI
-    //     *diex_out = *criaRegDIEX(); // injeta bolha
-    //     return;
-    // }
 
     printf("\n========= ESTAGIO DI =========\n");
     setSignal(diex_out->controle_DIEX, bidi_in->IR.opcode, bidi_in->IR.funct);
@@ -67,8 +51,6 @@ void estagio_DI(RegBIDI *bidi_in, RegDIEX *diex_out, BRegs *bancoReg, int *parad
     diex_out->rs = bidi_in->IR.rs;
     diex_out->pc_incrementado = bidi_in->pc_incrementado;
     
-    // Não se esqueça de liberar a memória alocada por buscaBancoRegs
-    // free(vetor_busca); 
 }
 
 
@@ -127,8 +109,6 @@ void estagio_ER(RegMEMER *memer_in, BRegs *bancoReg) {
     printf("\n========= ESTAGIO ER =========");
     imprimeControle(memer_in->controle_MEMER);
     printf("Instrução -> [%s] \n", memer_in->assembly);
-    //printf("Resultado ULA -> [%d] \n", memer_in->resultULA[0]);
-    //printf("Dado a ser escrito = [%d] \n", memer_in->dado);
 
     if (memer_in->controle_MEMER->regWrite == 1) {
         Mux *muxwb = criaMux(memer_in->dado, memer_in->resultULA[0], 0, memer_in->controle_MEMER->memReg);
@@ -143,100 +123,53 @@ void estagio_ER(RegMEMER *memer_in, BRegs *bancoReg) {
 
 void step(int *contClock, int *pc, int *parada, RegALL *regIN, RegALL *regOUT, BRegs *bancoReg, struct memoria_instrucao *memInst, struct memoria_dados *memDados) {
     *contClock += 1;
-    //printf("======== Inicio Step ========\n");
-    //printf("Cont Clock = [%d] \n", *contClock);
+    printf("======== Inicio Step ========\n");
+    printf("Cont Clock = [%d] \n", *contClock);
     estagio_ER(regIN->MEMER, bancoReg);
     estagio_MEM(regIN->EXMEM, regOUT->MEMER, memDados);
     estagio_EX(regIN->DIEX, regOUT->EXMEM);
-    estagio_DI(regIN->BIDI, regOUT->DIEX, bancoReg, parada);
-    estagio_BI(pc, regOUT->BIDI, memInst);
-    //HAZARDDDDD
-    if (unidadeDeHazard(regIN,regOUT))
+    if (regOUT->EXMEM->controle_EXEMEM->branch == 1 && regOUT->EXMEM->resultULA[2] == 1)
     {
-        printf("achou o hazard\n");
-        printf("PC VELHO - %d \n", *pc);
 
-        //enviar DI para BI
-        regOUT->BIDI->IR = criaIR();
-        //regOUT->BIDI->IR = buscaInstrucao(memInst, regOUT->DIEX->pc_incrementado - 1);
-        regOUT->BIDI->pc_incrementado = regOUT->DIEX->pc_incrementado;
-        //bolha no DI
-        *pc = regOUT->DIEX->pc_incrementado - 1;
-        regOUT->DIEX = criaRegDIEX();
-        printf("PC NOVO - %d \n", *pc);
-        //talvez eu tenha que copiar aquele pc incrementado
-        //para essa bolha do DI
-
-        //atualiza PC ---- prox depois da que chegou no DI
-        
+        // BEQ → branch verdadeiro
+        *pc = (regIN->DIEX->pc_incrementado) + regIN->DIEX->imm;
+        regOUT->BIDI = criaRegBIDI(); // bolha em BI
+        regOUT->DIEX = criaRegDIEX(); // bolha em DI
     }else
     {
-        if (regOUT->DIEX->controle_DIEX->jump == 1) {
-        printf("Addr [%d]", regOUT->DIEX->addr);
-        *pc = 0 + regOUT->DIEX->addr;
-        *(regOUT->BIDI) = *criaRegBIDI(); // flush em BI
-        printf("PC ----->> %d", *pc);
-        *(regOUT->DIEX) = *criaRegDIEX(); // flush em DI
-        } else if (regOUT->EXMEM->controle_EXEMEM->branch == 1 && regOUT->EXMEM->resultULA[0] == 0) {
-            // BEQ verdadeiro → branch taken
-            *pc = regIN->DIEX->pc_incrementado + regIN->DIEX->imm;
-            *(regOUT->BIDI) = *criaRegBIDI(); // flush em BI
-            *(regOUT->DIEX) = *criaRegDIEX(); // flush em DI
-        } else if (*parada) {
-            *pc = regOUT->BIDI->pc_incrementado;
+        estagio_DI(regIN->BIDI, regOUT->DIEX, bancoReg, parada);
+        estagio_BI(pc, regOUT->BIDI, memInst);
+        //HAZARDDDDD
+        if (unidadeDeHazard(regIN,regOUT))
+        {
+
+            //enviar DI para BI
+            regOUT->BIDI->IR = criaIR();
+            //caso queira só 1 bolha usar este//regOUT->BIDI->IR = buscaInstrucao(memInst, regOUT->DIEX->pc_incrementado - 1);
+            regOUT->BIDI->pc_incrementado = regOUT->DIEX->pc_incrementado;
+            //bolha no DI
+            *pc = regOUT->DIEX->pc_incrementado - 1;
+            regOUT->DIEX = criaRegDIEX();
+            //talvez eu tenha que copiar aquele pc incrementado
+            //para essa bolha do DI
+            
+        }else{
+            //JUMP
+            if (regOUT->DIEX->controle_DIEX->jump == 1) {
+                printf("Addr [%d]", regOUT->DIEX->addr);
+                *pc = 0 + regOUT->DIEX->addr;
+                regOUT->BIDI = criaRegBIDI(); // bolha em BI
+                printf("PC ----->> %d", *pc);
+                regOUT->DIEX = criaRegDIEX(); // bolha em DI
+            }else{
+                *pc = regOUT->BIDI->pc_incrementado;
+            }
         }
     }
-    
-    //printf("COMEÇOLLLLL");
-   
-    // if (unidadeDeHazard(regIN->BIDI, regIN->DIEX, regOUT->BIDI->IR))
-    // {
-    //     regOUT->BIDI->IR = criaIR();
-    //     regOUT->BIDI->pc_incrementado -= 1;
-    // }
-
-
-    
-
-     //IDEIA DE TRATAMENTO PARA J E BEQ
-   /*
-    if (regOUT->DIEX->controle_DIEX->jump == 1) {
-    printf("Addr [%d]", regOUT->DIEX->addr);
-    *pc = 0 + regOUT->DIEX->addr;
-    *(regOUT->BIDI) = *criaRegBIDI(); // flush em BI
-    printf("PC ----->> %d", *pc);
-    *(regOUT->DIEX) = *criaRegDIEX(); // flush em DI
-    } else if (regOUT->EXMEM->controle_EXEMEM->branch == 1 && regOUT->EXMEM->resultULA[0] == 0) {
-        // BEQ verdadeiro → branch taken
-        *pc = regIN->DIEX->pc_incrementado + regIN->DIEX->imm;
-        *(regOUT->BIDI) = *criaRegBIDI(); // flush em BI
-        *(regOUT->DIEX) = *criaRegDIEX(); // flush em DI
-    } else if (*parada) {
-        *pc = regOUT->BIDI->pc_incrementado;
-    }
-    */ 
-
-
-    
-    /*
-    // incrementar o PC
-    if (regOUT->DIEX->controle_DIEX->jump == 1) {
-        *pc = regOUT->DIEX->imm;
-    } else if (regOUT->EXMEM->controle_EXEMEM->branch == 1 && regOUT->EXMEM->resultULA == 0) {
-        *pc = regIN->DIEX->pc_incrementado + regIN->DIEX->imm;
-    } else if (*parada) {
-        *pc = regOUT->BIDI->pc_incrementado;
-    }
-    */
-
-    //imprimePipeline(*contClock, regOUT->BIDI, regOUT->DIEX, regOUT->EXMEM, regOUT->MEMER);
-    //imprimeBanco(bancoReg);
-    //printf("======== Fim Step ========\n");
 
     if (*pc >= 256)
     {
-        *parada = 1;
+        *parada = 0;
     }
-    
+    printf("======== Fim Step ========\n");
 }
-//teste
