@@ -143,7 +143,7 @@ void imprimeBIDI(struct Registrador_BIDI b) {
 void imprimeDIEX(struct Registrador_DIEX d) {
     printf("[DIEX] ASM: [%s]  A: [%d] B: [%d] IMM: [%d] rt: [%d] rd: [%d] PC: [%d] | ",
         d.assembly, d.RegA, d.RegB,d.imm, d.rt, d.rd, d.pc_incrementado);
-    if (d.controle_DIEX) imprimeControle(d.controle_DIEX);
+    if (d.controle_DIEX) imprimeControle(d.controle_DIEX, NULL, 0);
     else printf("CTRL: NULL\n");
 }
 
@@ -153,7 +153,7 @@ void imprimeEXMEM(struct Registrador_EXMEM e) {
         printf("ULA: [%d,%d,%d] | ", e.resultULA[0], e.resultULA[1], e.resultULA[2]);
     else
         printf("ULA: NULL | ");
-    if (e.controle_EXEMEM) imprimeControle(e.controle_EXEMEM);
+    if (e.controle_EXEMEM) imprimeControle(e.controle_EXEMEM, NULL, 0);
     else printf("CTRL: NULL\n");
 }
 
@@ -163,7 +163,7 @@ void imprimeMEMER(struct Registrador_MEMER m) {
         printf("ULA: [%d,%d,%d] | ", m.resultULA[0], m.resultULA[1], m.resultULA[2]);
     else
         printf("ULA: NULL | ");
-    if (m.controle_MEMER) imprimeControle(m.controle_MEMER);
+    if (m.controle_MEMER) imprimeControle(m.controle_MEMER, NULL, 0);
     else printf("CTRL: NULL\n");
 }
 
