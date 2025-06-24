@@ -1,5 +1,5 @@
 #include <ncurses.h>
-
+#include "pipeline.h"
 
 typedef struct bancoRegistradores BRegs;
 typedef struct registrador regs;
@@ -47,13 +47,15 @@ struct nodo {
     BRegs* bancoRegs;
     memDados* memoriaDados;
     nodoPilha *prox;
+    RegALL * regInAll;
+    RegALL * regOutAll;
     
 };
 
 descPilha* criarPilha();
 void inserePilha(descPilha* pilha, nodoPilha* nodo);
 nodoPilha* removePilha(descPilha* pilha);
-nodoPilha* criaNodo(int pc, BRegs* bancoRegs, memDados* memoriaDados);
+nodoPilha* criaNodo(int pc, BRegs* bancoRegs, memDados* memoriaDados, RegALL * regInAll, RegALL * regOutAll);
 // struct memoria_dados* copiaMemoriaDados(struct memoria_dados* memoriaDados);
 BRegs* copiaBancoRegistradores(BRegs* bancoRegs);
 void printStack(descPilha * pilha);

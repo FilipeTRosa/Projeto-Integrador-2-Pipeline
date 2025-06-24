@@ -214,7 +214,7 @@ int main(int argc, char const *argv[])
                     box(stepInterface, 0, 0);
                     mvwprintw(stepInterface, 2, (95-(strlen("STEP"))/2), "STEP");
 
-                    step(&contClock, &pc, &parada, RegIN, RegOUT, bancoRegistradores, &mem, &memDados, stepInterface);
+                    step(pilha, &contClock, &pc, &parada, RegIN, RegOUT, bancoRegistradores, &mem, &memDados, stepInterface);
                     RegIN = RegOUT;
 
                     wgetch(stepInterface);

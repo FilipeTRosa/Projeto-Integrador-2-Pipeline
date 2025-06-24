@@ -440,7 +440,7 @@ nodoPilha* removePilha(descPilha* pilha) {
     return aux;
 }
 
-nodoPilha* criaNodo(int pc, BRegs* bancoRegs, memDados* memoriaDados) {
+nodoPilha* criaNodo(int pc, BRegs* bancoRegs, memDados* memoriaDados, RegALL * regInAll, RegALL * regOutAll) {
     
     nodoPilha *new_nodo = (nodoPilha *)malloc(sizeof(nodoPilha));
 
@@ -448,6 +448,8 @@ nodoPilha* criaNodo(int pc, BRegs* bancoRegs, memDados* memoriaDados) {
     new_nodo->pc = pc;
     new_nodo->memoriaDados = memoriaDados;
     new_nodo->prox = NULL;
+    new_nodo->regInAll = regInAll;
+    new_nodo->regOutAll = regOutAll;
 
     return new_nodo;
 }
