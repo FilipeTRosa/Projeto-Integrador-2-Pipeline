@@ -1,6 +1,7 @@
 #ifndef MEMORIA_H
 #define MEMORIA_H
 
+#include <ncurses.h>
 
 typedef struct RegistradorInstrucao RegINST;
 typedef struct RegistradorDados RegMDR;
@@ -43,8 +44,8 @@ RegINST* criaRegIR();
 //RegMDR* criaRegMDR();
 
 void carregarInstrucoes(const char *nomeArquivo, struct memoria_instrucao *mem);
-void imprimeMemInstrucoes(struct memoria_instrucao *mem);
-void imprimeInstrucao(struct instrucao inst);
+void imprimeMemInstrucoes(WINDOW* telaInstrucoes, struct memoria_instrucao *mem);
+void imprimeInstrucao(int i, struct instrucao inst, WINDOW* telaInstrucao);
 void salvarAsm(const char *nomeArquivo, struct memoria_instrucao *memInst);
 const char* imprimeTipo(enum classe_inst tipo);
 //void salvarMemoriaEmArquivo(const char *nomeArquivo, struct memoria_instrucao *mem);

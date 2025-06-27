@@ -25,7 +25,7 @@ RegBIDI* criaRegBIDI() {
 RegDIEX* criaRegDIEX(){
     RegDIEX* new_reg = (RegDIEX*)malloc(sizeof(RegDIEX));
 
-    strcpy(new_reg->assembly, "vazio");
+    strcpy(new_reg->assembly, "NOP");
     strcpy(new_reg->binario, "0000000000000000");
     new_reg->controle_DIEX = criaControle();
     new_reg->RegA = 0;
@@ -43,7 +43,7 @@ RegDIEX* criaRegDIEX(){
 RegEXMEM* criaRegEXMEM(){
     RegEXMEM* new_reg = (RegEXMEM*)malloc(sizeof(RegEXMEM));
 
-    strcpy(new_reg->assembly, "vazio");
+    strcpy(new_reg->assembly, "NOP");
     new_reg->controle_EXEMEM = criaControle();
     new_reg->resultULA = 0;
     new_reg->RegB = 0;
@@ -55,7 +55,7 @@ RegEXMEM* criaRegEXMEM(){
 RegMEMER* criaRegMEMER(){
     RegMEMER* new_reg = (RegMEMER*)malloc(sizeof(RegMEMER));
 
-    strcpy(new_reg->assembly, "vazio");
+    strcpy(new_reg->assembly, "NOP");
     new_reg->controle_MEMER = criaControle();
     new_reg->resultULA = 0;
     new_reg->dado = 0;
@@ -66,10 +66,12 @@ RegMEMER* criaRegMEMER(){
 
 struct instrucao criaIR(){
     struct instrucao inst;
+    char copyAssembly[50];
 
     inst.tipo_inst = tipo_OUTROS;
     inst.inst_char[0] = '\0';
-    inst.assembly[0] = '\0';
+    strcpy(copyAssembly, "NOP");
+    strcpy(inst.assembly, copyAssembly);
     inst.opcode = 0;
     inst.rs = 0;
     inst.rt = 0;
@@ -137,7 +139,7 @@ void copiaRegALL(RegALL *in, RegALL *out) {
 // FUNCOES PARA IMPRIMIR REGs
 void imprimeBIDI(struct Registrador_BIDI b) {
     printf("[BIDI] PC: [%d] | ", b.pc_incrementado);
-    imprimeInstrucao(b.IR);
+    //imprimeInstrucao(b.IR);
 }
 
 void imprimeDIEX(struct Registrador_DIEX d) {
@@ -222,13 +224,13 @@ int unidadeDeHazard(RegALL *regIN, RegALL *regOUT){
             {
                 //    -- teste 1 tipo r no EX --             --- teste 2 tipoR no ER--                       
                 if((regOUT->EXMEM->rd == regOUT->DIEX->rt) || (regOUT->MEMER->rd == regOUT->DIEX->rt)){
-                    printf("Hazard Detectado --- SW ---\n");
+                    //printf("Hazard Detectado --- SW ---\n");
                     return 1;
                 }
                 //tem LW no EX                                             rd do lw == rd do sw
                 if (isLW(regOUT->EXMEM->controle_EXEMEM) && (regOUT->EXMEM->rd == regOUT->DIEX->rt))
                 {
-                    printf("Hazard Detectado --- SW ---\n");
+                    //printf("Hazard Detectado --- SW ---\n");
                     return 1;
                 }
                 //tem ADDI no EX ou no ER
@@ -237,7 +239,7 @@ int unidadeDeHazard(RegALL *regIN, RegALL *regOUT){
                     //agora tenho que testar o RT
                     if (regOUT->EXMEM->rd == regOUT->DIEX->rt || regOUT->MEMER->rd == regOUT->DIEX->rt)
                     {
-                        printf("Hazard Detectado --- SW ---\n");
+                        //printf("Hazard Detectado --- SW ---\n");
                         return 1;
                     } 
                 }
@@ -250,7 +252,7 @@ int unidadeDeHazard(RegALL *regIN, RegALL *regOUT){
             if (regOUT->DIEX->rs != 0)
             {
                 if ((regOUT->EXMEM->rd == regOUT->DIEX->rs) || (regOUT->MEMER->rd == regOUT->DIEX->rs)) {
-                printf("Hazard Detectado --- LW ---\n");
+                //printf("Hazard Detectado --- LW ---\n");
                 return 1;  // Hazard detectado
                 }
             }
@@ -266,7 +268,7 @@ int unidadeDeHazard(RegALL *regIN, RegALL *regOUT){
             {
                 if ((regOUT->EXMEM->rd == rs) || (regOUT->MEMER->rd == rs))
                 {
-                    printf("Hazard Detectado --- TipoR ---\n");
+                    //printf("Hazard Detectado --- TipoR ---\n");
                     return 1;
                 }
             }
@@ -274,7 +276,7 @@ int unidadeDeHazard(RegALL *regIN, RegALL *regOUT){
             {
                 if ((regOUT->EXMEM->rd == rt) || (regOUT->MEMER->rd == rt))
                 {
-                    printf("Hazard Detectado --- TipoR ---\n");
+                    //printf("Hazard Detectado --- TipoR ---\n");
                     return 1;
                 }
             }
@@ -287,7 +289,7 @@ int unidadeDeHazard(RegALL *regIN, RegALL *regOUT){
             {
                 if ((regOUT->EXMEM->rd == regOUT->DIEX->rs) || (regOUT->MEMER->rd == regOUT->DIEX->rs))
                 {
-                    printf("Hazard Detectado --- ADDI ---\n");
+                    //printf("Hazard Detectado --- ADDI ---\n");
                     return 1;
                 }  
             }   
@@ -303,7 +305,7 @@ int unidadeDeHazard(RegALL *regIN, RegALL *regOUT){
             {
                 if ((regOUT->EXMEM->rd == rs) || (regOUT->MEMER->rd == rs))
                 {
-                    printf("Hazard Detectado --- BEQ ---\n");
+                    //printf("Hazard Detectado --- BEQ ---\n");
                     return 1;
                 }
             }
@@ -311,7 +313,7 @@ int unidadeDeHazard(RegALL *regIN, RegALL *regOUT){
             {
                 if ((regOUT->EXMEM->rd == rt) || (regOUT->MEMER->rd == rt))
                 {
-                    printf("Hazard Detectado BEQ\n");
+                    //printf("Hazard Detectado BEQ\n");
                     return 1;
                 }
             }

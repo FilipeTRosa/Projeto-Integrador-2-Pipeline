@@ -24,7 +24,6 @@ int main(int argc, char const *argv[])
     cbreak();
     noecho();
     WINDOW* inputInterface;
-    WINDOW* stepInterface;
 
     //Alocando memoria de instrução
     struct memoria_instrucao mem;
@@ -114,9 +113,9 @@ int main(int argc, char const *argv[])
 
         switch (menu) {
             case 1:
-                inputInterface = newwin(6, 95, 10, (COLS/2)-45);
+                inputInterface = newwin(6, 91, 11, (COLS/2)-43);
                 box(inputInterface, 0, 0);
-                mvwprintw(inputInterface, 2, (95-(strlen("Digite o nome do arquivo .asm\n")))/2, "Digite o nome do arquivo .asm\n\n");
+                mvwprintw(inputInterface, 2, (91-(strlen("Digite o nome do arquivo .asm")))/2, "Digite o nome do arquivo .asm\n\n\t\t\t\t\t");
                 wrefresh(inputInterface);
 
                 keypad(inputInterface, TRUE);
@@ -129,9 +128,9 @@ int main(int argc, char const *argv[])
                 wrefresh(stdscr);
                 break;
             case 2:
-                inputInterface = newwin(6, 95, 10, (COLS/2)-45);
+                inputInterface = newwin(6, 91, 11, (COLS/2)-43);
                 box(inputInterface, 0, 0);
-                mvwprintw(inputInterface, 2, (95-(strlen("Digite o nome do arquivo .dat\n")))/2, "Digite o nome do arquivo .dat\n\n");
+                mvwprintw(inputInterface, 2, (91-(strlen("Digite o nome do arquivo .dat\n")))/2, "Digite o nome do arquivo .dat\n\n\t\t\t\t\t");
                 wrefresh(inputInterface);
 
                 keypad(inputInterface, TRUE);
@@ -143,28 +142,126 @@ int main(int argc, char const *argv[])
                 clear();
                 wrefresh(stdscr);
                 break;
-            /*
+            
             case 3:
-                //imprime memorias
-                system("clear");
-                imprimeMemInstrucoes(&mem);
-                imprimeMemDados(&memDados);
-                break;
-            case 4:
-                system("clear");
-                imprimeBanco(bancoRegistradores); // Testando se o banco de registradores foi criado de maneira correta
-                break;
-            case 5: 
-                imprimeMemInstrucoes(&mem);
-                imprimeMemDados(&memDados);
-                imprimeBanco(bancoRegistradores);
-                imprimeEstatistica(stat);
-                break;
-                */
-            case 6:
-                inputInterface = newwin(6, 95, 10, (COLS/2)-45);
+
+                int select = 1;
+                int optionSelect = -1;
+                int ch;
+                int runFlag = -1;
+
+                inputInterface = newwin(6, 91, 11, (COLS/2)-43);
                 box(inputInterface, 0, 0);
-                mvwprintw(inputInterface, 2, (95-(strlen("Digite o nome do arquivo para salvar\n")))/2, "Digite o nome do arquivo para salvar\n\n");
+                keypad(inputInterface, TRUE);
+
+                do {
+                    
+                    menuButton(inputInterface, 2, (91-(strlen("Instrucao")))/2, "Instrucoes", (select==1));
+                    menuButton(inputInterface, 4, (91-(strlen("Dados")))/2, "Dados", (select==2));
+                    wrefresh(inputInterface);
+
+                    ch = wgetch(inputInterface);
+                    
+                    switch(ch) {
+                        case KEY_UP:
+                            if(select > 1) {
+                                select--;
+                            }
+                            break;
+                        case KEY_DOWN:
+                            if(select < 2) {
+                                select++;
+                            }
+                            break;
+                        case '\n':
+                            optionSelect = select;
+                            delwin(inputInterface);
+                            clear();
+                            runFlag = 0;
+                            wrefresh(stdscr);
+                            break;
+                    }
+
+                }while(runFlag == -1);
+
+                switch(optionSelect) {
+                    case 1:
+                        clear();
+                        wrefresh(stdscr);
+                        imprimeMemInstrucoes(stdscr, &mem);
+                        wgetch(stdscr);
+                        clear();
+                        wrefresh(stdscr);                       
+                        break;
+                    case 2:
+                        clear();
+                        wrefresh(stdscr);
+                        imprimeMemDados(stdscr, &memDados);
+                        wgetch(stdscr);
+                        clear();
+                        wrefresh(stdscr); 
+                        break;
+                    }
+                break;
+            
+            case 4:
+                int selectB = 1;
+                int optionSelectB = -1;
+                int chB;
+                int runFlagB = -1;
+
+                inputInterface = newwin(6, 91, 11, (COLS/2)-43);
+                box(inputInterface, 0, 0);
+                keypad(inputInterface, TRUE);
+
+                do {
+                    
+                    menuButton(inputInterface, 2, (91-(strlen("Banco de Registradores")))/2, "Banco de Registradores", (selectB==1));
+                    menuButton(inputInterface, 4, (91-(strlen("Registradores de Pipeline")))/2, "Registradores de Pipeline", (selectB==2));
+                    wrefresh(inputInterface);
+
+                    chB = wgetch(inputInterface);
+                    
+                    switch(chB) {
+                        case KEY_UP:
+                            if(selectB > 1) {
+                                selectB--;
+                            }
+                            break;
+                        case KEY_DOWN:
+                            if(selectB < 2) {
+                                selectB++;
+                            }
+                            break;
+                        case '\n':
+                            optionSelectB = selectB;
+                            delwin(inputInterface);
+                            clear();
+                            runFlagB = 0;
+                            wrefresh(stdscr);
+                            break;
+                    }
+
+                }while(runFlagB == -1);
+
+                switch(optionSelectB) {
+                    case 1:
+                        clear();
+                        wrefresh(stdscr);
+                        imprimeBanco(bancoRegistradores);
+                        clear();
+                        wrefresh(stdscr);                       
+                        break;
+                    case 2:
+                        clear();
+                        wrefresh(stdscr);
+                        break;
+                    }
+                break;
+            case 5:
+                inputInterface = newwin(6, 91, 11, (COLS/2)-43);
+                box(inputInterface, 0, 0);
+                mvwprintw(inputInterface, 2, (91-(strlen("Digite o nome do arquivo para salvar\n")))/2, "Digite o nome do arquivo para salvar\n\n\t\t\t\t");
                 wrefresh(inputInterface);
 
                 keypad(inputInterface, TRUE);
@@ -176,10 +273,10 @@ int main(int argc, char const *argv[])
                 clear();
                 wrefresh(stdscr);
                 break;
-            case 7:
-                inputInterface = newwin(6, 95, 10, (COLS/2)-45);
+            case 6:
+                inputInterface = newwin(6, 91, 11, (COLS/2)-43);
                 box(inputInterface, 0, 0);
-                mvwprintw(inputInterface, 2, (95-(strlen("Digite o nome do arquivo para salvar\n")))/2, "Digite o nome do arquivo para salvar\n\n");
+                mvwprintw(inputInterface, 2, (91-(strlen("Digite o nome do arquivo para salvar\n")))/2, "Digite o nome do arquivo para salvar\n\n\t\t\t\t");
                 wrefresh(inputInterface);
 
                 keypad(inputInterface, TRUE);
@@ -191,43 +288,26 @@ int main(int argc, char const *argv[])
                 clear();
                 wrefresh(stdscr);
                 break;
-            /*case 8:
-                {FILE *log = freopen("log_run.txt", "w", stdout);
-                if (!log) { perror("Erro ao abrir log"); break; }
-                // int contador = 0;
-
+            case 7:
                 while (parada)
                 {
-                    step(&contClock, &pc, &parada, RegIN, RegOUT, bancoRegistradores, &mem, &memDados);
+                    stepRUN(pilha, &contClock, &pc, &parada, RegIN, RegOUT, bancoRegistradores, &mem, &memDados);
                 }
-                fflush(stdout);
-                fclose(log);
-                freopen("/dev/tty", "w", stdout); // volta para terminal
-                imprimeLogNoTerminal("log_run.txt");
-                */
-            case 9:
+                break;
+            case 8:
 
                     //step(&parada, &pc, &mem, bancoRegistradores, controle, pilha, stat, &estadoControle, &regSaidaULA->resultULA, regMDR, &RegA, &RegB, regIR);
                     // step(&parada, &pc, &memDados, &mem, bancoRegistradores, controle, pilha, stat
-
-                    stepInterface = newwin(48, 95, 2, (COLS/2)-45);
-                    box(stepInterface, 0, 0);
-                    mvwprintw(stepInterface, 2, (95-(strlen("STEP"))/2), "STEP");
-
-                    step(pilha, &contClock, &pc, &parada, RegIN, RegOUT, bancoRegistradores, &mem, &memDados, stepInterface);
-                    RegIN = RegOUT;
-
-                    wgetch(stepInterface);
-                    wrefresh(stepInterface);
-
-                    delwin(stepInterface);
                     clear();
                     wrefresh(stdscr);
 
+                    step(pilha, &contClock, &pc, &parada, RegIN, RegOUT, bancoRegistradores, &mem, &memDados);
+                    RegIN = RegOUT;
+
+                    wrefresh(stdscr);
+
                 break;
-            /*
-            case 10:
-                printf("\nBACK\n");
+            case 9:
                 nodoPilha *voltaInstrucao = removePilha(pilha);
                 if (voltaInstrucao != NULL)
                 {
@@ -235,21 +315,28 @@ int main(int argc, char const *argv[])
                     bancoRegistradores = voltaInstrucao->bancoRegs;
                     pc = voltaInstrucao->pc;
                     memDados = *voltaInstrucao->memoriaDados;
-                }
-                printf("\n ********* Instrucao Atutal apos BACK ********* \n");
-                printf("->PC: [%d]\n",pc);
-                printf("->Instrução executada: [%s]\n", buscaInstrucao(&mem, pc).assembly);
-                printf("->Registradores estado antigo");
-                imprimeBanco(bancoRegistradores);
 
-                //printStack(pilha);
+                    WINDOW* inputInterface = newwin(12, 91, 11, (COLS/2)-43);
+                    box(inputInterface, 0, 0);
+                    mvwprintw(inputInterface, 1, 2, "---------------------------------------------------------------------------------------");
+                    mvwprintw(inputInterface, 2, (91-(strlen("STEP BACK")))/2, "STEP BACK");
+                
+                    mvwprintw(inputInterface, 3, (91-(strlen("Reconfigurando o simulador...")))/2, "Reconfigurando o simulador...");
+                    mvwprintw(inputInterface, 5, 2, "->PC: [%d]",pc);
+                    mvwprintw(inputInterface, 6, 2, "->Instrução: [%s]", buscaInstrucao(&mem, pc).assembly);
+                    mvwprintw(inputInterface, 8, 2,"Pressinone qualquer tecla para continuar...");
+                    wrefresh(inputInterface);
+                    wgetch(inputInterface);
+                    delwin(inputInterface);
+                    delwin(inputInterface);
+                    wrefresh(stdscr);
+                }
                 break;
-                */
-            case 12: 
+            case 10: 
                 endwin();
                 break;
         }
-    } while (menu != 12);
+    } while (menu != 10);
     
     free(mem.mem_inst);
     return 0;

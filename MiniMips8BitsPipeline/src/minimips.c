@@ -84,7 +84,17 @@ int conversorBinParaDecimal (int compDeDois, char * palavra){
 struct instrucao buscaInstrucao(struct memoria_instrucao * memoria, int pc){
     struct instrucao inst = {0};    
     if (pc < 0 || pc >= memoria->tamanho) {
-        printf("Erro: PC fora do intervalo.\n");
+        WINDOW* inputInterface = newwin(6, 91, 11, (COLS/2)-43);
+        box(inputInterface, 0, 0);
+        mvwprintw(inputInterface, 1, 2, "---------------------------------------------------------------------------------------");
+        mvwprintw(inputInterface, 2, (91-(strlen("ERRO")))/2, "ERRO");
+        mvwprintw(inputInterface, 3, (91-(strlen("Nenhum programa inicializado")))/2, "Nenhum programa inicializado");
+        mvwprintw(inputInterface, 4, 2,"Pressinone qualquer tecla para continuar...");
+        wrefresh(inputInterface);
+        wgetch(inputInterface);
+        delwin(inputInterface);
+        clear();
+        wrefresh(stdscr);
         return inst;  // Retorna uma instrução inválida (inicializada)
     }
     
@@ -134,20 +144,30 @@ void imprimeReg(regs* reg) {
     printf("║ $%-2d: %-4d ", reg->id, reg->valor);
 }
 
-void imprimeBanco(BRegs* bancoRegs, WINDOW* stepInterface) {
+void imprimeBanco(BRegs* bancoRegs) {
 
         regs *aux = bancoRegs->registradores;
         int contador = 0;
-        mvwprintw(stepInterface, 10, 2, "== Banco de Registradores ==");
+
+        WINDOW* inputInterface = newwin(15, 91, 11, (COLS/2)-43);
+        box(inputInterface, 0, 0);
+        mvwprintw(inputInterface, 1, 2, "---------------------------------------------------------------------------------------");
+        mvwprintw(inputInterface, 2, (91-(strlen("BANCO DE REGISTRADORES")))/2, "BANCO DE REGISTRADORES");
+
         while (aux != NULL && aux->id <= 7) {
-           mvwprintw(stepInterface, 11, 2, "$%-2d: %-4d  ", aux->id, aux->valor);
+
+           mvwprintw(inputInterface, (3 + contador), 2, "$%-2d: %-4d  ", aux->id, aux->valor);
            contador++;
            aux = aux->prox;
+           wrefresh(inputInterface);
         }
 
-       mvwprintw(stepInterface, 12, 2, "============================");
-
-       wrefresh(stepInterface);
+        mvwprintw(inputInterface, 12, 2,"Pressinone qualquer tecla para continuar...");
+        wrefresh(inputInterface);
+        wgetch(inputInterface);
+        delwin(inputInterface);
+        clear();
+        wrefresh(stdscr);
 }
 
 
@@ -430,7 +450,17 @@ nodoPilha* removePilha(descPilha* pilha) {
     nodoPilha *aux = pilha->instrucoes;
 
     if(pilha->tamanho == 0) {
-        printf("\nNenhuma instrucao foi executada!\n");
+        WINDOW* inputInterface = newwin(12, 91, 11, (COLS/2)-43);
+        box(inputInterface, 0, 0);
+        mvwprintw(inputInterface, 1, 2, "---------------------------------------------------------------------------------------");
+        mvwprintw(inputInterface, 2, (91-(strlen("ATENCAO")))/2, "ATENCAO");
+        mvwprintw(inputInterface, 5, (91-(strlen("Nenhuma instrucao foi executada")))/2, "Nenhuma instrucao foi executada");
+        mvwprintw(inputInterface, 8, 2,"Pressinone qualquer tecla para continuar...");
+        wrefresh(inputInterface);
+        wgetch(inputInterface);
+        delwin(inputInterface);
+        clear();
+        wrefresh(stdscr);
     }
     else {
         pilha->instrucoes = aux->prox;

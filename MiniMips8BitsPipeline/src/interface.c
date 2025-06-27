@@ -65,14 +65,12 @@ int menuInterface() {
         "Inicialize seu programa",
         "Insira dados para execução",
         "Imprime as memorias de dados e instruções",
-        "Imprime o banco de registradores",
-        "",
+        "Veja o estado dos registradores",
         "Salve seu programa em assembly",
         "Salve sua memoria de dados",
         "Executa o programa carregado",
         "Executa uma instrução",
         "Volta uma instrução",
-        "Personalize o simulador do seu jeito",
         "Encerrar programa",
     };
 
@@ -91,19 +89,18 @@ int menuInterface() {
         menuButton(menuWin, 4, 2, "Carregar memoria de Dados (.dat)", (select==2));
         menuButton(menuWin, 6, 2, "Ver memorias", (select==3));
         menuButton(menuWin, 8, 2, "Ver registradores", (select==4));
-        menuButton(menuWin, 10, 2, "Imprimir simulador", (select==5));
-        menuButton(menuWin, 12, 2, "Salvar assembly", (select==6));
-        menuButton(menuWin, 14, 2, "Salvar dados", (select==7));
-        menuButton(menuWin, 16, 2, "Run", (select==8));
-        menuButton(menuWin, 18, 2, "Step", (select==9));
-        menuButton(menuWin, 20, 2, "Step Back", (select==10));
-        menuButton(menuWin, 22, 2, "Configuracoes", (select==11));
-        menuButton(menuWin, 24, 2, "Sair", (select==12));
+        menuButton(menuWin, 10, 2, "Salvar assembly", (select==5));
+        menuButton(menuWin, 12, 2, "Salvar dados", (select==6));
+        menuButton(menuWin, 14, 2, "Run", (select==7));
+        menuButton(menuWin, 16, 2, "Step", (select==8));
+        menuButton(menuWin, 18, 2, "Step Back", (select==9));
+        menuButton(menuWin, 20, 2, "Sair", (select==10));
 
         wrefresh(menuWin);
 
         werase(infoWin);
         box(infoWin, 0, 0);
+        clear();
         mvwprintw(infoWin, 2, 2, "%s", details[select-1]);
         wrefresh(infoWin);
 
@@ -117,7 +114,7 @@ int menuInterface() {
                 }
                 break;
             case 's':
-                if(select < 12) {
+                if(select < 10) {
                     select++;
                 }
                 break;

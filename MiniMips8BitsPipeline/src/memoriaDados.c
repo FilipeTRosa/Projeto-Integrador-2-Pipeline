@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <ncurses.h>
 
 
 
@@ -17,7 +18,14 @@
 void carregarDados(const char *nomeArquivo, struct memoria_dados *memDados){
     FILE *arquivo = fopen(nomeArquivo, "r");
     if (arquivo == NULL) {
-        printf("Erro ao abrir o arquivo %s.\n", nomeArquivo);
+        WINDOW* inputInterface = newwin(6, 91, 11, (COLS/2)-43);
+        box(inputInterface, 0, 0);
+        mvwprintw(inputInterface, 1, 2, "---------------------------------------------------------------------------------------");
+        mvwprintw(inputInterface, 2, (91-(strlen("Erro ao abrir o arquivo")))/2, "Erro ao abrir o arquivo %s", nomeArquivo);
+        mvwprintw(inputInterface, 4, 2,"Pressinone qualquer tecla para continuar...");
+        wrefresh(inputInterface);
+        wgetch(inputInterface);
+        delwin(inputInterface);
         return;
     }
 
@@ -57,18 +65,17 @@ int getDado(struct memoria_dados *mem, int endereco){
 }
 
 
-void imprimeDado(struct dado dado){
-    printf("Valor: [%d]\n", dado.dado);
+void imprimeDado(int i, struct dado dado, WINDOW* telaDados){
+    mvwprintw(telaDados, i, 18, "Valor: [%d]", dado.dado);
 }
 
-void imprimeMemDados(struct memoria_dados *mem){
-    printf("==== Memoria de dados ====\n");
+void imprimeMemDados(WINDOW* telaDados, struct memoria_dados *mem){
     for (int i = 0; i < mem->tamanho; i++)
     {
-        printf("Posicao: [%d], ", i);
-        imprimeDado(mem->mem_dados[i]);
+        mvwprintw(telaDados, i+1, 2, "Posicao: [%d], ", i);
+        imprimeDado(i+1, mem->mem_dados[i], telaDados);
+        wrefresh(telaDados);
     }
-    printf("==========================\n");
 }
 
 struct memoria_dados* copiaMemoriaDados(struct memoria_dados* memoriaDados) {
