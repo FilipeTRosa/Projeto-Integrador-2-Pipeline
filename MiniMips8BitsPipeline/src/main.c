@@ -44,7 +44,9 @@ int main(int argc, char const *argv[])
     RegALL *RegOUT = criaRegAll();
     int contClock = 0;
     
-
+    int select, optionSelect;
+    int selectB, optionSelectB;
+    nodoPilha *voltaInstrucao = NULL;
 
     //
     struct estatistica *stat = NULL;
@@ -145,8 +147,8 @@ int main(int argc, char const *argv[])
             
             case 3:
 
-                int select = 1;
-                int optionSelect = -1;
+                select = 1;
+                optionSelect = -1;
                 int ch;
                 int runFlag = -1;
 
@@ -205,8 +207,8 @@ int main(int argc, char const *argv[])
                 break;
             
             case 4:
-                int selectB = 1;
-                int optionSelectB = -1;
+                selectB = 1;
+                optionSelectB = -1;
                 int chB;
                 int runFlagB = -1;
 
@@ -302,13 +304,15 @@ int main(int argc, char const *argv[])
                     wrefresh(stdscr);
 
                     step(pilha, &contClock, &pc, &parada, RegIN, RegOUT, bancoRegistradores, &mem, &memDados);
+                    RegALL *temp = RegIN;
                     RegIN = RegOUT;
+                    RegOUT = temp;
 
                     wrefresh(stdscr);
 
                 break;
             case 9:
-                nodoPilha *voltaInstrucao = removePilha(pilha);
+                voltaInstrucao = removePilha(pilha);
                 if (voltaInstrucao != NULL)
                 {
                     stat->back++;

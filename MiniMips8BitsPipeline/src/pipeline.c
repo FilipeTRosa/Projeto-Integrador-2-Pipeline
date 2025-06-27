@@ -112,6 +112,9 @@ void copiaRegDIEX(RegDIEX *in, RegDIEX *out) {
     in->rd = out->rd;
     in->rs = out->rs;
     in->pc_incrementado = out->pc_incrementado;
+
+    strcpy(in->assembly, out->assembly);
+    strcpy(in->binario, out->binario);
 }
 
 void copiaRegEXMEM(RegEXMEM *in, RegEXMEM *out) {
