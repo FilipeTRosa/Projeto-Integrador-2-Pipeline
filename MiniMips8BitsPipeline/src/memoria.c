@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdio.h>
+#include <ncurses.h>
 
 
 
@@ -30,8 +31,18 @@ void salvarAsm(const char *nomeArquivo, struct memoria_instrucao *memInst) {
 void carregarInstrucoes(const char *nomeArquivo, struct memoria_instrucao *mem){
     struct instrucao instrucaoDecodificada;
     FILE *arquivoEntrada = fopen(nomeArquivo, "r");  
+    
     if (!arquivoEntrada) {
-        printf("Erro ao abrir o arquivo %s.\n", nomeArquivo);
+
+        WINDOW* inputInterface = newwin(6, 91, 11, (COLS/2)-43);
+        box(inputInterface, 0, 0);
+        mvwprintw(inputInterface, 1, 2, "---------------------------------------------------------------------------------------");
+        mvwprintw(inputInterface, 2, (91-(strlen("Erro ao abrir o arquivo")))/2, "Erro ao abrir o arquivo %s", nomeArquivo);
+        mvwprintw(inputInterface, 4, 2,"Pressinone qualquer tecla para continuar...");
+        wrefresh(inputInterface);
+        wgetch(inputInterface);
+        delwin(inputInterface);
+        //printf("Erro ao abrir o arquivo %s.\n", nomeArquivo);
         return;
     }
 
@@ -67,21 +78,20 @@ void carregarInstrucoes(const char *nomeArquivo, struct memoria_instrucao *mem){
 }
 
 
-void imprimeInstrucao(struct instrucao inst){ 
-    printf("Binario: [%s], ASM: [%s], opcode: [%d], rs: [%d], rt: [%d], rd: [%d], funct: [%d], imm: [%d], addr: [%d], tipo: [%s]\n",
+void imprimeInstrucao(int i, struct instrucao inst, WINDOW* telaInstrucao){ 
+    mvwprintw(telaInstrucao, i, 18, "BIN: [%s], ASM: [%s], opcode: [%d], rs: [%d], rt: [%d], rd: [%d], funct: [%d], imm: [%d], addr: [%d], tipo: [%s]",
         inst.inst_char, inst.assembly, inst.opcode, inst.rs,
         inst.rt, inst.rd, inst.funct,
         inst.imm, inst.addr, imprimeTipo(inst.tipo_inst));
 }
 
-void imprimeMemInstrucoes(struct memoria_instrucao *mem){
-    printf("==== Memoria de instruçoes ====\n");
+void imprimeMemInstrucoes(WINDOW* telaInstrucao, struct memoria_instrucao *mem){
     for (int i = 0; i < mem->tamanho; i++)
     {
-        printf("Posicao: [%d], ", i);
-        imprimeInstrucao(mem->mem_inst[i]);
+        mvwprintw(telaInstrucao, i+1, 2, "Posicao: [%d], ", i);
+        imprimeInstrucao(i+1, mem->mem_inst[i], telaInstrucao);
+        wrefresh(telaInstrucao);
     }
-    printf("===============================\n");
 }
 
 const char* imprimeTipo(enum classe_inst tipo) {
